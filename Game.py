@@ -62,19 +62,35 @@ class Game():
     def __processInput(self,input):
         input = input.strip()
 
-        if len(input) != 2:            
+        if input == "U":
+            if self.model.selectedPiece == None:
+                self.dashboardText = "No Piece is currently selected"
+            self.dashboardText = self.model.unselect()
+        elif len(input) != 2:            
             self.dashboardText = f"Invalid Input! Your input should be 2 characters, you gave {len(input)}"
-        elif input[0] not in "123456789" or input[1] not in "ABCDEFG":
+        elif not (input[0]  in "123456789" and input[1]  in "ABCDEFG"):                
             self.dashboardText = f"Invalid Input! String format needs to be Row,Column e.g '3C' you entered {input} "
-
-        if self.model.selectedPiece == None:           
-            self.dashboardText = self.model.selectPiece(position=input)
-            self.board = self.updateBoard()  
+        
         else:
-            self.dashboardText = self.model.attemptMove(position=input)
+            #Valid Move
+            if self.model.selectedPiece == None:           
+                self.dashboardText = self.model.selectPiece(position=input)
+                
+            else:
+                self.dashboardText = self.model.attemptMove(position=input)   
+                
+        self.board = self.updateBoard() 
+
+
+        
+
+           
+    
+
+        
 
           
-
+        
 
 
 

@@ -3,24 +3,27 @@ from Constants import *
  
 
 class Model():
+    
     def __init__(self) -> None:
         self.board  = [[0 for col in range(7)] for row in range(9)] 
         self.__initializeBoard()
         self.__assignPieces()
-        self.selectedPiece = None 
-        # self.playerTurn = Player.One
+        self.selectedPiece = None
+        self.deadPiecesPlayerOne = 0 
+        self.deadPiecesPlayerTwo = 0 
+        self.playerTurn = Player.One
         
     def __initializeBoard(self):
         for row in range(9):
             for col in range (0,7):
                 if (row,col) in riverAreas:
-                    self.board[row][col] = Square(type = SquareType.Water,row=row,col=col)
+                    self.board[row][col] = Square(type = SquareType.Water,row=row,col=col,model=self)
                 elif (row,col) in trapAreas:
-                    self.board[row][col] = Square(type = SquareType.Trap,row=row,col=col)
+                    self.board[row][col] = Square(type = SquareType.Trap,row=row,col=col,model=self)
                 elif (row,col) in denAreas:
-                    self.board[row][col] = Square(type = SquareType.Den,row=row,col=col)
+                    self.board[row][col] = Square(type = SquareType.Den,row=row,col=col,model=self)
                 else:
-                    self.board[row][col] = Square(type = SquareType.Normal,row=row,col=col)
+                    self.board[row][col] = Square(type = SquareType.Normal,row=row,col=col,model=self)
     def __assignPieces(self):
         self.board[0][0].occupiedPiece = Piece(player = Player.One,location=self.board[0][0],type=PieceType.Lion)
         self.board[0][6].occupiedPiece = Piece(player = Player.One,location=self.board[0][6],type=PieceType.Tiger)
@@ -57,6 +60,10 @@ class Model():
 
          return result
 
+    def unselect(self):
+        self.selectedPiece = None 
+        return "Piece unselected"
+
     def _getCoordinate(self,position):
         #Converts Human friendly coordinate (7A) to machine friendly coordinate (row=6,col=0)
         row = int(position[0])-1
@@ -85,17 +92,32 @@ class Piece():
 
     
 
+
+
+    def attack(self,opponent):
+        #Doesn't check if same or diff team, assumes its diff team. 
+        if self.type.value >= opponent.type.value: #In general if higher (or eq) rank...
+            if not (self.type == PieceType.Elephant and opponent.type == PieceType.Rat): #Elephant cant eat rat
+                return True #Eat                 
+        elif (self.type == PieceType.Rat and opponent.type == PieceType.Elephant):#Rat can eat Elephant
+            return True #Eat 
+        return False 
+
+
+    
+
 class Square():
-    def __init__(self,type,row,col) -> None:
+    def __init__(self,type,row,col,model) -> None:
         self.type : SquareType = type
         self.occupiedPiece : Piece = None
         self.row = row
         self.col = col
+        self.model = model
 
 
     def _jumpElligible(self,piece):
         #Checks if a piece is elligible to make the jump
-        return piece.type == PieceType.Tiger or piece.type == PieceType.Lion
+        return (piece.type == PieceType.Tiger or piece.type == PieceType.Lion) #Is the piece a Tiger or a Lion?
 
 
     def _withinOneSquare(self,piece):
@@ -113,42 +135,136 @@ class Square():
             else: return False #More than one square away
         else: return False  #Diagonally or too far away.
 
+    def _ownDen(self,piece):
+        #Checks if piece is an ally piece trying to move to it's own den.
+        if self.type == SquareType.Den: #Checks if the square is a den square to begin with
+            #Checks if den and piece are from same team
+            if (piece.team == Player.One) and (self.row == 0):
+                return True 
+            elif (piece.team == Player.Two) and (self.row == 8):
+                return True 
+        return False 
 
-    def _validJump(self,piece):
-        #Will check if elligible piece is making a valid jump!
-        pass
+    def _waterElligible(self,piece):
+        #Only concerns scenario when a rat tries to move into a water.
+        return piece.type == PieceType.Rat 
+        # Water Square check needs to be implemented exertnally before invoking the function
+        #This func assumes that the square is water square. 
+        
+        
 
-    def _attemptAttack(self,piece):
+    def _validJump(self,piece): 
+        #Will check if elligible piece is making a valid jump! assume it's an elligible piece already. ( by using _jumpElligible())
+        #X1 = Oirign, Y1 = Destination
+        X1 = (piece.location.row,piece.location.col)
+        Y1 = (self.row,self.col)
+
+        for pair in jumpPoints:
+            if X1 in pair and Y1 in pair: #Both Starting and Ending condition match
+                return True
+        return False  
+
+    def _attemptAttack(self,piece): # UNFINISHED
         #Will check if the attack is elligible
-        return "YOU MUST RETURN SOMETHING"
+        # Scenarios: 
+        #     1. Cross Border Attack Check 
+        #     2. If Rank is followed 
+        #     3. If Victim in Den Square
+      
+
+        #3
+        if (self.type == SquareType.Den):
+            return self._attack(piece=piece)
+        #1
+        elif (piece.type == PieceType.Rat and self._crossBorderAttack(piece=piece)):
+            return "Cross-Border attack isn't allowed!"    
+        #2
+        elif piece.attack(self.occupiedPiece):
+            return self._attack(piece=piece)
+
+        return "Inelligible Attack"
+
+    def _attack(self,piece):
+        #Attacks and occupies
+        statement = f"Succesfully attacked {self.occupiedPiece.type}"
+            #Logs for model to track state of game
+        if self.occupiedPiece.type == Player.One:
+            self.model.deadPiecesPlayerOne += 1
+        else:
+            self.model.deadPiecesPlayerOne += 1 
+
+        #Removes Reference
+        piece.location.occupiedPiece = None 
+        self.occupiedPiece = piece 
+        piece.location = self
+        return statement
+
+    def _crossBorderAttack(self,piece):
+        #Assumes piece is a rat piece 
+        return self.type != piece.location.type
+        
 
 
 
-    def tryToOccupy(self,piece):
-        #If already a piece exists in the square 
-        if self.occupiedPiece != None:
-            if self.occupiedPiece.team == piece.team: #Checks if collison with own piece
-                return "This square is already occupied by your Piece"
-            else: 
-                #Collison with enemy piece, checking attack elligibility
-                return self._attemptAttack()
 
 
-            
-        #If vacant square, checks if further rules are followed
+    def tryToOccupy(self,piece): # UNFINISHED
+
+         #If vacant square, checks if further rules are followed
         #If one square rule is followed
         if not self._withinOneSquare(piece):
             if not self._jumpElligible(piece): #If not within one square, it could be a jump elligible piece 
                 return "Invalid destination. You are out of your range."
             #Meaning a jump elligible piece that's outside of one range, checking if the jump is valid
-            if not self._validJump(piece):
-                return "Invalid Jump attempted!"
+            elif not self._validJump(piece):
+                return "Invalid Jump attempted!"         
+        elif self._ownDen(piece=piece):
+            return "Illegal Move! You tried to move to your own den square"
+        elif (self.type==SquareType.Water) and (not self._waterElligible()):
+            return "Illegal Move, You can't move into water. Only Rat(1) Can!"
+
+        #If already a piece exists in the square 
+        if self.occupiedPiece != None:
+            if self.occupiedPiece.team == piece.team: #Checks if collison with own piece
+                if self.occupiedPiece == piece:
+                    return "You are already here"
+                return "This square is already occupied by your Piece"
+            else: 
+                #Collison with enemy piece, checking attack elligibility
+                return self._attemptAttack(piece=piece)
+
+
+            
+       
+                        
+       
+
+
+        outcome = self._occupy(piece=piece)  #<-----Need further logic before calling this
+        return outcome
         #TO DO: 
           #Check if the piece has right to move in (e.g Den, Water , Cross-border for a rat)
           #Implement Active Player who has turn
           #Implement Turn rotation
 
+    def _occupy(self,piece):
+        #Called when its determined that occupying this square is a legal move. 
+        oldLocation = piece.location
+        self.occupiedPiece = piece 
+        piece.location = self 
+        emptied = oldLocation.empty()
+        if emptied:
+            return f"Succesfully moved piece to square #GIVE_VALUE"
+        return "There was a problem, couldn't leave old square"
 
-
+    
+    def empty(self): #Mostly ( should work)
+        #Called to remove piece from old square when located to new square
+        piece = self.occupiedPiece
+        if  piece != None and piece.location != self: #If there is an occupied piece which is referencing another square
+            self.occupiedPiece = None 
+            return True 
+        return False 
+        #Occuupy Failed
 
     
