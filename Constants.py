@@ -20,6 +20,20 @@ class PieceType(Enum):
     Lion = 7
     Elephant = 8
 
+columnDict = {
+    'A' : 0,
+    'B' : 1,
+    'C' : 2,
+    "D" : 3,
+    'E': 4,
+    'F' : 5,
+    'G' : 6
+}
+    
+
+
+   
+
 
 riverAreas = [
             (3,1),(3,2),(3,4),(3,5),

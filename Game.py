@@ -7,7 +7,7 @@ class Game():
     dashboardText = "Welcome to JungleBoard"
     model = Model()
     def __init__(self):
-        self.board = self.updateBoard()   
+        self.board = self.updateBoard() 
         
         self.display = Display(game=self)        
         
@@ -22,10 +22,11 @@ class Game():
     ##Intent Functions ------------------------------------------------------------------------------------------------------------------------
     def __feedbackLoop(self):
 
-        while not self.__IsFinished():
+        while not self.__IsFinished():            
             self.display.drawBoard()
             input = self.display.takeInput()
             self.__processInput(input)
+            
 
 
     def updateBoard(self):
@@ -38,22 +39,50 @@ class Game():
                 else: 
                     #Assign Pieces its subscript based on which team they are in 
                     if piece.team == Player.One:
-                        board[row][col]=self.term.pink(f'  {piece.type.value}\u2081 ')
-                    else: 
-                        board[row][col]=self.term.purple(f'  {piece.type.value}\u2082 ')
+                        if piece == self.model.selectedPiece: 
+                            
+                            board[row][col]=self.term.yellow(f'  {piece.type.value}\u2081 ')
+                        else:
+                            board[row][col]=self.term.pink(f'  {piece.type.value}\u2081 ')
+                    else:
+                        if piece == self.model.selectedPiece:                                                      
+                            board[row][col]=self.term.yellow_bold_underline(f'  {piece.type.value}\u2082 ')
+                        else:
+                            board[row][col]=self.term.purple(f'  {piece.type.value}\u2082 ')
+        return board
+                        
                     
 
                 
-        return board
+        
 
     def __IsFinished(self):
         return False 
     
     def __processInput(self,input):
-        if len(input.strip()) != 2:            
-            self.dashboardText = f"Invalid Input! Your input should be 2 characters, you gave {len(input.strip())}"
+        input = input.strip()
 
-    
+        if len(input) != 2:            
+            self.dashboardText = f"Invalid Input! Your input should be 2 characters, you gave {len(input)}"
+        elif input[0] not in "123456789" or input[1] not in "ABCDEFG":
+            self.dashboardText = f"Invalid Input! String format needs to be Row,Column e.g '3C' you entered {input} "
+
+        if self.model.selectedPiece == None:           
+            self.dashboardText = self.model.selectPiece(position=input)
+            self.board = self.updateBoard()  
+        else:
+            self.dashboardText = self.model.attemptMove(position=input)
+
+          
+
+
+
+
+
+        
+
+        
+
 
     
 

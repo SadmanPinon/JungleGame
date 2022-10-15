@@ -19,11 +19,11 @@ class Display():
             print(f"{term.yellow}{row+1}",end="")          
             for col in range (0,7):
                 if (row,col) in riverAreas:
-                    print(f"{term.white_on_blue(f'{self.game.board[row][col]}')}",end="")
+                    print(f"{term.on_blue(f'{self.game.board[row][col]}')}",end="")
                 elif (row,col) in trapAreas:
-                    print(f"{term.white_on_red(f'{self.game.board[row][col]}')}",end="")
+                    print(f"{term.on_red(f'{self.game.board[row][col]}')}",end="")
                 elif (row,col) in denAreas:
-                    print(f"{term.white_on_green(f'{self.game.board[row][col]}')}",end="")
+                    print(f"{term.on_green(f'{self.game.board[row][col]}')}",end="")
                 else:
                     print(f"{term.white(f'{self.game.board[row][col]}')}",end="")
             print("\n")
@@ -36,7 +36,7 @@ class Display():
     def takeInput(self):
         print(self.game.dashboardText)
         userInput = input("Enter Input: ")
-        return userInput
+        return userInput.upper()
         
             
 
