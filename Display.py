@@ -1,18 +1,10 @@
 from blessed import Terminal  
 
+
 class Display():
     def __init__(self,game):
         self.game = game 
-        
-        
-            
-        
-        
-        # board[1][1] = term.pink_bold('  8\u2090   ')
-        # board[1][2] = term.purple_bold('  8\u2090   ')
-
-
-        
+  
 
     
     def drawBoard(self):
@@ -47,5 +39,13 @@ class Display():
             print("\n")
         for item in "ABCDEFG":
             print(f"    {term.yellow(f'{item}')}  ",end="")
+        print("\n")
+
+
+    def takeInput(self):
+        print(self.game.dashboardText)
+        userInput = input("Enter Input: ")
+        return userInput
+        
             
 
