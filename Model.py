@@ -48,7 +48,8 @@ class Model():
         coordinate = self._getCoordinate(position = position)
         piece = self.board[coordinate[0]][coordinate[1]].occupiedPiece 
         self.selectedPiece = piece
-
+        if piece == None : 
+            return f"No Piece Exists in position {position} "
 
 
         return f"You have selected {piece.type}" 
@@ -69,6 +70,28 @@ class Model():
         row = int(position[0])-1
         column = columnDict[position[1]]
         return (row,column)  
+
+    def isIntervened(self,X1,Y1):
+        matchingIndex = 0 if X1[0] == Y1[0] else 1
+        differingIndex = 1 if X1[0] == Y1[0] else 0 #If row same then col differingIndex and vice Versa 
+
+        startingIndex = X1[differingIndex]  if X1[differingIndex] < Y1[differingIndex] else Y1[differingIndex]
+        startingIndex +=1 
+        endingIndex = X1[differingIndex]  if X1[differingIndex] >= Y1[differingIndex] else Y1[differingIndex]
+        
+        for index in range(startingIndex,endingIndex):
+            
+            if matchingIndex == 0: 
+                        
+                if self.board[X1[0]][index].occupiedPiece != None:  #Intervening square found
+                    return True  
+            else:
+                if self.board[index][X1[1]].occupiedPiece != None:  #Intervening square found
+                    return True  
+           
+            
+        return False 
+
 
 
     
@@ -161,7 +184,11 @@ class Square():
 
         for pair in jumpPoints:
             if X1 in pair and Y1 in pair: #Both Starting and Ending condition match
-                return True
+                if not self.model.isIntervened(X1=X1,Y1=Y1):
+                   
+                    return True 
+                
+                return False 
         return False  
 
     def _attemptAttack(self,piece): # UNFINISHED
@@ -170,14 +197,16 @@ class Square():
         #     1. Cross Border Attack Check 
         #     2. If Rank is followed 
         #     3. If Victim in Den Square
+        #     4. Jump attack in presence of intervening square.
       
 
         #3
-        if (self.type == SquareType.Den):
+        if (self.type == SquareType.Trap):
             return self._attack(piece=piece)
         #1
         elif (piece.type == PieceType.Rat and self._crossBorderAttack(piece=piece)):
-            return "Cross-Border attack isn't allowed!"    
+            return "Cross-Border attack isn't allowed!"
+            
         #2
         elif piece.attack(self.occupiedPiece):
             return self._attack(piece=piece)
@@ -220,7 +249,7 @@ class Square():
                 return "Invalid Jump attempted!"         
         elif self._ownDen(piece=piece):
             return "Illegal Move! You tried to move to your own den square"
-        elif (self.type==SquareType.Water) and (not self._waterElligible()):
+        elif (self.type==SquareType.Water) and (not self._waterElligible(piece=piece)):
             return "Illegal Move, You can't move into water. Only Rat(1) Can!"
 
         #If already a piece exists in the square 

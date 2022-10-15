@@ -41,7 +41,7 @@ class Game():
                     if piece.team == Player.One:
                         if piece == self.model.selectedPiece: 
                             
-                            board[row][col]=self.term.yellow(f'  {piece.type.value}\u2081 ')
+                            board[row][col]=self.term.yellow_bold_underline(f'  {piece.type.value}\u2081 ')
                         else:
                             board[row][col]=self.term.pink(f'  {piece.type.value}\u2081 ')
                     else:
@@ -78,7 +78,7 @@ class Game():
                 
             else:
                 self.dashboardText = self.model.attemptMove(position=input)   
-                
+
         self.board = self.updateBoard() 
 
 
