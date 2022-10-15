@@ -1,5 +1,5 @@
-from blessed import Terminal  
 
+from Constants import *
 
 class Display():
     def __init__(self,game):
@@ -9,21 +9,11 @@ class Display():
     
     def drawBoard(self):
         #Statically setting coordinates where special Squares will exist
-        riverAreas = [
-            (3,1),(3,2),(3,4),(3,5),
-            (4,1),(4,2),(4,4),(4,5),
-            (5,1),(5,2),(5,4),(5,5)
-            ]
-        trapAreas = [
-            (0,2),(8,2),
-            (0,4),(8,4),
-            (1,3),(7,3)
-            ]
-        denAreas = [(0,3),(8,3)]
+        
 
         
-        term = Terminal() #Special String formatter 
-
+         #Special String formatter 
+        term = self.game.term
         for row in range (0,9):
             #Declaring Vertical Grid 1-9
             print(f"{term.yellow}{row+1}",end="")          
@@ -37,8 +27,9 @@ class Display():
                 else:
                     print(f"{term.white(f'{self.game.board[row][col]}')}",end="")
             print("\n")
+        print(" ",end="")
         for item in "ABCDEFG":
-            print(f"    {term.yellow(f'{item}')}  ",end="")
+            print(f"  {term.yellow(f'{item}')}  ",end="")
         print("\n")
 
 
