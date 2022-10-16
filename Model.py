@@ -48,7 +48,12 @@ class Model():
     def selectPiece(self,position):
         coordinate = self._getCoordinate(position = position)
         piece = self.board[coordinate[0]][coordinate[1]].occupiedPiece 
+
+        if piece.team != self.playerTurn:
+            return f"You can't choose Opponent's Piece!"
+
         self.selectedPiece = piece
+
         if piece == None : 
             return f"No Piece Exists in position {position} "
 
@@ -93,6 +98,12 @@ class Model():
             
         return False 
 
+    def changeTurns(self):
+        #Change to 1 if 2 is playing otherwise 1
+        self.playerTurn = Player.One if self.playerTurn == Player.Two else Player.Two 
+
+        #Deselects any selected piece 
+        self.selectedPiece = None 
 
 
     
@@ -227,6 +238,8 @@ class Square():
         piece.location.occupiedPiece = None 
         self.occupiedPiece = piece 
         piece.location = self
+        #Changes Player Turns
+        self.model.changeTurns()
         return statement
 
     def _crossBorderAttack(self,piece):
@@ -272,10 +285,7 @@ class Square():
 
         outcome = self._occupy(piece=piece)  #<-----Need further logic before calling this
         return outcome
-        #TO DO: 
-          #Check if the piece has right to move in (e.g Den, Water , Cross-border for a rat)
-          #Implement Active Player who has turn
-          #Implement Turn rotation
+      
 
     def _occupy(self,piece):
         #Called when its determined that occupying this square is a legal move. 
@@ -286,6 +296,7 @@ class Square():
         if emptied:
             colString = "ABCDEFG"
             colString = colString[self.col]
+            self.model.changeTurns()
             return f"Succesfully moved piece to square {self.row+1,colString}"
         return "There was a problem, couldn't leave old square"
 

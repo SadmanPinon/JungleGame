@@ -35,6 +35,8 @@ class Display():
 
     def takeInput(self):
         print(self.game.dashboardText)
+        player = "Player 1" if self.game.model.playerTurn == Player.One else "Player 2"
+        print(f"{player}'s Turn")
         userInput = input("Enter Input: ")
         return userInput.upper()
         
