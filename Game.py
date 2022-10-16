@@ -26,8 +26,9 @@ class Game():
             self.display.drawBoard()
             input = self.display.takeInput()
             self.__processInput(input)
-            
-
+        
+        winner = "Player 1" if self.model.winner == Player.One else "Player 2"
+        print(f"Game Finished! {winner} Wins!")
 
     def updateBoard(self):
         board = [[0 for col in range(7)] for row in range(9)] 
@@ -57,6 +58,14 @@ class Game():
         
 
     def __IsFinished(self):
+        if self.model.deadPiecesPlayerOne == 9:
+            self.model.winner = Player.Two
+            return True
+        elif self.model.deadPiecesPlayerTwo == 9: 
+            self.model.winner = Player.One 
+            return True 
+        elif self._isDenCaptured():
+            return True 
         return False 
     
     def __processInput(self,input):
@@ -81,7 +90,16 @@ class Game():
 
         self.board = self.updateBoard() 
 
-
+    def _isDenCaptured(self):
+        #Checks if both the boards have presence of enemy Piece
+        #Assumes a den can't be occupied by same team
+        if self.model.board[0][3].occupiedPiece != None:
+            self.model.winner = Player.Two
+            return True
+        elif  self.model.board[8][3].occupiedPiece != None: 
+            self.model.winner = Player.One 
+            return True 
+        return False 
         
 
            

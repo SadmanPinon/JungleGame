@@ -12,6 +12,7 @@ class Model():
         self.deadPiecesPlayerOne = 0 
         self.deadPiecesPlayerTwo = 0 
         self.playerTurn = Player.One
+        self.winner = None 
         
     def __initializeBoard(self):
         for row in range(9):
@@ -220,7 +221,7 @@ class Square():
         if self.occupiedPiece.type == Player.One:
             self.model.deadPiecesPlayerOne += 1
         else:
-            self.model.deadPiecesPlayerOne += 1 
+            self.model.deadPiecesPlayerTwo += 1 
 
         #Removes Reference
         piece.location.occupiedPiece = None 
@@ -283,7 +284,9 @@ class Square():
         piece.location = self 
         emptied = oldLocation.empty()
         if emptied:
-            return f"Succesfully moved piece to square #GIVE_VALUE"
+            colString = "ABCDEFG"
+            colString = colString[self.col]
+            return f"Succesfully moved piece to square {self.row+1,colString}"
         return "There was a problem, couldn't leave old square"
 
     
