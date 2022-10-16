@@ -13,7 +13,9 @@ class Model():
         self.deadPiecesPlayerTwo = 0 
         self.playerTurn = Player.One
         self.winner = None 
-        
+
+    ## Auxlery Functions ------------------------------------------------------------------------------------------------------------------------
+
     def __initializeBoard(self):
         for row in range(9):
             for col in range (0,7):
@@ -45,6 +47,14 @@ class Model():
         self.board[6][2].occupiedPiece = Piece(player = Player.Two,location=self.board[6][2],type=PieceType.Wolf)
         self.board[6][0].occupiedPiece = Piece(player = Player.Two,location=self.board[6][0],type=PieceType.Elephant)
 
+    def _getCoordinate(self,position):
+        #Converts Human friendly coordinate (7A) to machine friendly coordinate (row=6,col=0)
+        row = int(position[0])-1
+        column = columnDict[position[1]]
+        return (row,column)   
+
+      ##Intent Functions ------------------------------------------------------------------------------------------------------------------------
+
     def selectPiece(self,position):
         coordinate = self._getCoordinate(position = position)
         piece = self.board[coordinate[0]][coordinate[1]].occupiedPiece 
@@ -69,13 +79,8 @@ class Model():
 
     def unselect(self):
         self.selectedPiece = None 
-        return "Piece unselected"
+        return "Piece unselected"   
 
-    def _getCoordinate(self,position):
-        #Converts Human friendly coordinate (7A) to machine friendly coordinate (row=6,col=0)
-        row = int(position[0])-1
-        column = columnDict[position[1]]
-        return (row,column)  
 
     def isIntervened(self,X1,Y1):
         matchingIndex = 0 if X1[0] == Y1[0] else 1
@@ -105,7 +110,7 @@ class Model():
         #Deselects any selected piece 
         self.selectedPiece = None 
 
-
+   
     
                 
 
@@ -149,6 +154,7 @@ class Square():
         self.col = col
         self.model = model
 
+    ## Auxlery Functions ------------------------------------------------------------------------------------------------------------------------
 
     def _jumpElligible(self,piece):
         #Checks if a piece is elligible to make the jump
@@ -246,10 +252,21 @@ class Square():
         #Assumes piece is a rat piece 
         return self.type != piece.location.type
         
+    def _occupy(self,piece):
+        #Called when its determined that occupying this square is a legal move. 
+        oldLocation = piece.location
+        self.occupiedPiece = piece 
+        piece.location = self 
+        emptied = oldLocation.empty()
+        if emptied:
+            colString = "ABCDEFG"
+            colString = colString[self.col]
+            self.model.changeTurns()
+            return f"Succesfully moved piece to square {self.row+1,colString}"
+        return "There was a problem, couldn't leave old square"
 
 
-
-
+    ##Intent Functions ------------------------------------------------------------------------------------------------------------------------
 
     def tryToOccupy(self,piece): # UNFINISHED
 
@@ -284,21 +301,9 @@ class Square():
 
 
         outcome = self._occupy(piece=piece)  #<-----Need further logic before calling this
-        return outcome
-      
+        return outcome   
 
-    def _occupy(self,piece):
-        #Called when its determined that occupying this square is a legal move. 
-        oldLocation = piece.location
-        self.occupiedPiece = piece 
-        piece.location = self 
-        emptied = oldLocation.empty()
-        if emptied:
-            colString = "ABCDEFG"
-            colString = colString[self.col]
-            self.model.changeTurns()
-            return f"Succesfully moved piece to square {self.row+1,colString}"
-        return "There was a problem, couldn't leave old square"
+    
 
     
     def empty(self): #Mostly ( should work)
@@ -308,6 +313,6 @@ class Square():
             self.occupiedPiece = None 
             return True 
         return False 
-        #Occuupy Failed
+       
 
     

@@ -12,23 +12,15 @@ class Game():
         self.display = Display(game=self)        
         
 
-    def start(self):
-        self.__feedbackLoop()
-        
+    
 
 
 
 
     ##Intent Functions ------------------------------------------------------------------------------------------------------------------------
-    def __feedbackLoop(self):
-
-        while not self.__IsFinished():            
-            self.display.drawBoard()
-            input = self.display.takeInput()
-            self.__processInput(input)
+    def start(self):
+        self.__feedbackLoop()
         
-        winner = "Player 1" if self.model.winner == Player.One else "Player 2"
-        print(f"Game Finished! {winner} Wins!")
 
     def updateBoard(self):
         board = [[0 for col in range(7)] for row in range(9)] 
@@ -55,7 +47,7 @@ class Game():
                     
 
                 
-        
+    ## Auxlery Functions ------------------------------------------------------------------------------------------------------------------------
 
     def __IsFinished(self):
         if self.model.deadPiecesPlayerOne == 9:
@@ -101,7 +93,15 @@ class Game():
             return True 
         return False 
         
-
+    
+    def __feedbackLoop(self):
+        while not self.__IsFinished():            
+            self.display.drawBoard()
+            input = self.display.takeInput()
+            self.__processInput(input)
+        
+        winner = "Player 1" if self.model.winner == Player.One else "Player 2"
+        print(f"Game Finished! {winner} Wins!")
            
     
 
