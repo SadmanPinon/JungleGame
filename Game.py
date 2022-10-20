@@ -1,11 +1,12 @@
+from xmlrpc.client import Boolean
 from Display import Display
 from blessed import Terminal  
 from Model import * 
 
 class Game():
-    term = Terminal()
-    dashboardText = "Welcome to JungleBoard"
-    model = Model()
+    term = Terminal() #Used for formatting terminal text
+    dashboardText = "Welcome to JungleBoard" #Dashboard Text display useful info regarding stages of the game (e.g piece occupied/player attacked)
+    model = Model() 
     def __init__(self):
         self.board = self.updateBoard() 
         
@@ -18,11 +19,16 @@ class Game():
 
 
     ##Intent Functions ------------------------------------------------------------------------------------------------------------------------
-    def start(self):
+    def start(self) -> None:
+        '''Starts the game for user to Begin Playing'''
         self.__feedbackLoop()
         
 
-    def updateBoard(self):
+    def updateBoard(self) -> None:
+        '''
+        Based on the data of the model, the board's structure is created. in this function
+        @returns The updated board as arrays of strings
+        '''
         board = [[0 for col in range(7)] for row in range(9)] 
         for row in range(0,9):
             for col in range(0,7):
@@ -49,7 +55,11 @@ class Game():
                 
     ## Auxlery Functions ------------------------------------------------------------------------------------------------------------------------
 
-    def __IsFinished(self):
+    def __IsFinished(self) -> Boolean:
+        '''
+        Checks the two logic of the game to determine if the game is finsihed
+        @returns Boolean 
+        '''
         if self.model.deadPiecesPlayerOne == 9:
             self.model.winner = Player.Two
             return True
@@ -60,7 +70,11 @@ class Game():
             return True 
         return False 
     
-    def __processInput(self,input):
+    def __processInput(self,input:str) -> None:
+        '''
+        Processes the input for it's validity and after which passes to the appropriate model function to take action 
+        Updates board once input is processed to view the newest state of game.
+        '''
         input = input.strip()
 
         if input == "U":
@@ -82,7 +96,7 @@ class Game():
 
         self.board = self.updateBoard() 
 
-    def _isDenCaptured(self):
+    def _isDenCaptured(self) -> None:
         #Checks if both the boards have presence of enemy Piece
         #Assumes a den can't be occupied by same team
         if self.model.board[0][3].occupiedPiece != None:
@@ -94,7 +108,7 @@ class Game():
         return False 
         
     
-    def __feedbackLoop(self):
+    def __feedbackLoop(self) -> None:
         while not self.__IsFinished():            
             self.display.drawBoard()
             input = self.display.takeInput()

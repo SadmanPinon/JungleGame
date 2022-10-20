@@ -7,7 +7,7 @@ class Display():
   
 
     
-    def drawBoard(self):
+    def drawBoard(self) -> None:
         #Statically setting coordinates where special Squares will exist
         
 
@@ -33,7 +33,7 @@ class Display():
         print("\n")
 
 
-    def takeInput(self):
+    def takeInput(self) -> str:
         print(self.game.dashboardText)
         player = "Player 1" if self.game.model.playerTurn == Player.One else "Player 2"
         print(f"{player}'s Turn")

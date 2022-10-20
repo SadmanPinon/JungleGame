@@ -1,4 +1,5 @@
 from turtle import pos
+from xmlrpc.client import Boolean
 from Constants import * 
  
 
@@ -16,7 +17,7 @@ class Model():
 
     ## Auxlery Functions ------------------------------------------------------------------------------------------------------------------------
 
-    def __initializeBoard(self):
+    def __initializeBoard(self) -> None:
         for row in range(9):
             for col in range (0,7):
                 if (row,col) in riverAreas:
@@ -27,7 +28,7 @@ class Model():
                     self.board[row][col] = Square(type = SquareType.Den,row=row,col=col,model=self)
                 else:
                     self.board[row][col] = Square(type = SquareType.Normal,row=row,col=col,model=self)
-    def __assignPieces(self):
+    def __assignPieces(self) -> None:
         self.board[0][0].occupiedPiece = Piece(player = Player.One,location=self.board[0][0],type=PieceType.Lion)
         self.board[0][6].occupiedPiece = Piece(player = Player.One,location=self.board[0][6],type=PieceType.Tiger)
         self.board[1][1].occupiedPiece = Piece(player = Player.One,location=self.board[1][1],type=PieceType.Dog)
@@ -47,7 +48,7 @@ class Model():
         self.board[6][2].occupiedPiece = Piece(player = Player.Two,location=self.board[6][2],type=PieceType.Wolf)
         self.board[6][0].occupiedPiece = Piece(player = Player.Two,location=self.board[6][0],type=PieceType.Elephant)
 
-    def _getCoordinate(self,position):
+    def _getCoordinate(self,position: str) -> tuple[int, int]:
         #Converts Human friendly coordinate (7A) to machine friendly coordinate (row=6,col=0)
         row = int(position[0])-1
         column = columnDict[position[1]]
@@ -55,7 +56,7 @@ class Model():
 
       ##Intent Functions ------------------------------------------------------------------------------------------------------------------------
 
-    def selectPiece(self,position):
+    def selectPiece(self,position: str) -> str:
         coordinate = self._getCoordinate(position = position)
         piece = self.board[coordinate[0]][coordinate[1]].occupiedPiece 
 
@@ -70,19 +71,19 @@ class Model():
 
         return f"You have selected {piece.type}" 
 
-    def attemptMove(self,position=input):
+    def attemptMove(self,position : str =input) -> str:
          coordinate = self._getCoordinate(position = position)
          square = self.board[coordinate[0]][coordinate[1]]
          result = square.tryToOccupy(piece = self.selectedPiece)
 
          return result
 
-    def unselect(self):
+    def unselect(self) -> str:
         self.selectedPiece = None 
         return "Piece unselected"   
 
 
-    def isIntervened(self,X1,Y1):
+    def isIntervened(self,X1: tuple[int, int],Y1: tuple[int, int]) -> Boolean:
         matchingIndex = 0 if X1[0] == Y1[0] else 1
         differingIndex = 1 if X1[0] == Y1[0] else 0 #If row same then col differingIndex and vice Versa 
 
@@ -103,7 +104,7 @@ class Model():
             
         return False 
 
-    def changeTurns(self):
+    def changeTurns(self) -> None:
         #Change to 1 if 2 is playing otherwise 1
         self.playerTurn = Player.One if self.playerTurn == Player.Two else Player.Two 
 
@@ -156,12 +157,12 @@ class Square():
 
     ## Auxlery Functions ------------------------------------------------------------------------------------------------------------------------
 
-    def _jumpElligible(self,piece):
+    def _jumpElligible(self,piece: Piece) -> Boolean:
         #Checks if a piece is elligible to make the jump
         return (piece.type == PieceType.Tiger or piece.type == PieceType.Lion) #Is the piece a Tiger or a Lion?
 
 
-    def _withinOneSquare(self,piece):
+    def _withinOneSquare(self,piece: Piece) -> Boolean:
         #Implements the rule that makes sure the piece is moving ONE square only verticall/horizonally but not diagonally.
         currentLocation = piece.location
         if currentLocation.row == self.row:
@@ -176,7 +177,7 @@ class Square():
             else: return False #More than one square away
         else: return False  #Diagonally or too far away.
 
-    def _ownDen(self,piece):
+    def _ownDen(self,piece: Piece) -> Boolean:
         #Checks if piece is an ally piece trying to move to it's own den.
         if self.type == SquareType.Den: #Checks if the square is a den square to begin with
             #Checks if den and piece are from same team
@@ -186,7 +187,7 @@ class Square():
                 return True 
         return False 
 
-    def _waterElligible(self,piece):
+    def _waterElligible(self,piece: Piece) -> Boolean:
         #Only concerns scenario when a rat tries to move into a water.
         return piece.type == PieceType.Rat 
         # Water Square check needs to be implemented exertnally before invoking the function
@@ -194,7 +195,7 @@ class Square():
         
         
 
-    def _validJump(self,piece): 
+    def _validJump(self,piece: Piece) -> Boolean: 
         #Will check if elligible piece is making a valid jump! assume it's an elligible piece already. ( by using _jumpElligible())
         #X1 = Oirign, Y1 = Destination
         X1 = (piece.location.row,piece.location.col)
@@ -209,7 +210,7 @@ class Square():
                 return False 
         return False  
 
-    def _attemptAttack(self,piece): # UNFINISHED
+    def _attemptAttack(self,piece: Piece) -> str: # UNFINISHED
         #Will check if the attack is elligible
         # Scenarios: 
         #     1. Cross Border Attack Check 
@@ -231,7 +232,7 @@ class Square():
 
         return "Inelligible Attack"
 
-    def _attack(self,piece):
+    def _attack(self,piece : Piece) -> str:
         #Attacks and occupies
         statement = f"Succesfully attacked {self.occupiedPiece.type}"
             #Logs for model to track state of game
@@ -248,11 +249,11 @@ class Square():
         self.model.changeTurns()
         return statement
 
-    def _crossBorderAttack(self,piece):
+    def _crossBorderAttack(self,piece: Piece)-> str:
         #Assumes piece is a rat piece 
         return self.type != piece.location.type
         
-    def _occupy(self,piece):
+    def _occupy(self,piece: Piece) -> str:
         #Called when its determined that occupying this square is a legal move. 
         oldLocation = piece.location
         self.occupiedPiece = piece 
@@ -268,7 +269,7 @@ class Square():
 
     ##Intent Functions ------------------------------------------------------------------------------------------------------------------------
 
-    def tryToOccupy(self,piece): # UNFINISHED
+    def tryToOccupy(self,piece: Piece) -> str: # UNFINISHED
 
          #If vacant square, checks if further rules are followed
         #If one square rule is followed
@@ -306,7 +307,7 @@ class Square():
     
 
     
-    def empty(self): #Mostly ( should work)
+    def empty(self) -> Boolean: #Mostly ( should work)
         #Called to remove piece from old square when located to new square
         piece = self.occupiedPiece
         if  piece != None and piece.location != self: #If there is an occupied piece which is referencing another square
