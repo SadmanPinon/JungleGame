@@ -55,7 +55,7 @@ class Game():
                 
     ## Auxlery Functions ------------------------------------------------------------------------------------------------------------------------
 
-    def __IsFinished(self) -> Boolean:
+    def __isFinished(self) -> Boolean:
         '''
         Checks the two logic of the game to determine if the game is finsihed
         @returns Boolean 
@@ -96,7 +96,7 @@ class Game():
 
         self.board = self.updateBoard() 
 
-    def _isDenCaptured(self) -> None:
+    def _isDenCaptured(self) -> Boolean:
         #Checks if both the boards have presence of enemy Piece
         #Assumes a den can't be occupied by same team
         if self.model.board[0][3].occupiedPiece != None:
@@ -109,7 +109,7 @@ class Game():
         
     
     def __feedbackLoop(self) -> None:
-        while not self.__IsFinished():            
+        while not self.__isFinished():            
             self.display.drawBoard()
             input = self.display.takeInput()
             self.__processInput(input)

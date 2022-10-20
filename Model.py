@@ -135,7 +135,7 @@ class Piece():
 
 
 
-    def attack(self,opponent):
+    def attack(self,opponent) -> Boolean:
         #Doesn't check if same or diff team, assumes its diff team. 
         if self.type.value >= opponent.type.value: #In general if higher (or eq) rank...
             if not (self.type == PieceType.Elephant and opponent.type == PieceType.Rat): #Elephant cant eat rat
