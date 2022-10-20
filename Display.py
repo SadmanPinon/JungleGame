@@ -2,13 +2,19 @@
 from Constants import *
 
 class Display():
+    '''
+    Displays the State of the board to the user. and recieves user input command
+    '''
     def __init__(self,game):
         self.game = game 
   
 
     
     def drawBoard(self) -> None:
-        #Statically setting coordinates where special Squares will exist
+        '''
+         Statically setting coordinates where special Squares will exist
+        '''
+       
         
 
         
@@ -34,6 +40,10 @@ class Display():
 
 
     def takeInput(self) -> str:
+        '''
+        Takes User Input
+        @Returns formatted string indicating user input
+        '''
         print(self.game.dashboardText)
         player = "Player 1" if self.game.model.playerTurn == Player.One else "Player 2"
         print(f"{player}'s Turn")

@@ -4,7 +4,9 @@ from Constants import *
  
 
 class Model():
-    
+    '''The Model has the Logical state of the game, including board state, player turn and winner status. It uses two Helper classes, Piece and Square
+    to maintain and update the logic of the game.
+    '''
     def __init__(self) -> None:
         self.board  = [[0 for col in range(7)] for row in range(9)] 
         self.__initializeBoard()
@@ -18,6 +20,7 @@ class Model():
     ## Auxlery Functions ------------------------------------------------------------------------------------------------------------------------
 
     def __initializeBoard(self) -> None:
+        '''Initializes the board to it's newest State'''
         for row in range(9):
             for col in range (0,7):
                 if (row,col) in riverAreas:
@@ -29,6 +32,9 @@ class Model():
                 else:
                     self.board[row][col] = Square(type = SquareType.Normal,row=row,col=col,model=self)
     def __assignPieces(self) -> None:
+        '''Assigns Pieces to it's initial position by Creating Piece instances and assigning them to the appropriate
+            square in the board array.
+        '''
         self.board[0][0].occupiedPiece = Piece(player = Player.One,location=self.board[0][0],type=PieceType.Lion)
         self.board[0][6].occupiedPiece = Piece(player = Player.One,location=self.board[0][6],type=PieceType.Tiger)
         self.board[1][1].occupiedPiece = Piece(player = Player.One,location=self.board[1][1],type=PieceType.Dog)
@@ -49,7 +55,11 @@ class Model():
         self.board[6][0].occupiedPiece = Piece(player = Player.Two,location=self.board[6][0],type=PieceType.Elephant)
 
     def _getCoordinate(self,position: str) -> tuple[int, int]:
-        #Converts Human friendly coordinate (7A) to machine friendly coordinate (row=6,col=0)
+        '''
+        Converts Human friendly coordinate (7A) to machine friendly coordinate (row=6,col=0)
+        @Returns Tuple of (Row,Column) in Integer Format
+        '''
+        
         row = int(position[0])-1
         column = columnDict[position[1]]
         return (row,column)   
@@ -57,6 +67,10 @@ class Model():
       ##Intent Functions ------------------------------------------------------------------------------------------------------------------------
 
     def selectPiece(self,position: str) -> str:
+        '''
+        Given a board position, this function attempts to select the piece in that position
+        @Returns String indicating wether the operation was succesful 
+        '''
         coordinate = self._getCoordinate(position = position)
         piece = self.board[coordinate[0]][coordinate[1]].occupiedPiece 
 
@@ -72,18 +86,31 @@ class Model():
         return f"You have selected {piece.type}" 
 
     def attemptMove(self,position : str =input) -> str:
-         coordinate = self._getCoordinate(position = position)
-         square = self.board[coordinate[0]][coordinate[1]]
-         result = square.tryToOccupy(piece = self.selectedPiece)
+        '''
+         Given a board position, this function attempts to move into the particular board position
+         @Returns String indicating wether the operation was succesful
+        '''
+        coordinate = self._getCoordinate(position = position)
+        square = self.board[coordinate[0]][coordinate[1]]
+        result = square.tryToOccupy(piece = self.selectedPiece)
 
-         return result
+        return result
 
     def unselect(self) -> str:
+        '''
+         Unselects the currently selected Piece
+         @Returns String indicating wether the operation was succesful
+        '''
         self.selectedPiece = None 
         return "Piece unselected"   
 
 
     def isIntervened(self,X1: tuple[int, int],Y1: tuple[int, int]) -> Boolean:
+        '''
+         Given a Origin Position X1 and Jump Target Position Y1, this function determines if 
+         there are pieces in the intervening squares between the two squares. 
+         @Returns Boolean indicating if there is intervening square or not. 
+        '''
         matchingIndex = 0 if X1[0] == Y1[0] else 1
         differingIndex = 1 if X1[0] == Y1[0] else 0 #If row same then col differingIndex and vice Versa 
 
@@ -105,6 +132,9 @@ class Model():
         return False 
 
     def changeTurns(self) -> None:
+        '''
+         Switches Player Turns         
+        '''
         #Change to 1 if 2 is playing otherwise 1
         self.playerTurn = Player.One if self.playerTurn == Player.Two else Player.Two 
 
@@ -121,12 +151,21 @@ class Model():
 
 
 class Piece():
+    '''
+    This class represents an inidividual Piece in the game. 
+    '''
     def __init__(self,type,location,player) -> None:
         self.team : Player = player
         self.type : PieceType = type 
         self.location : Square = location
+
     
-    def __eq__(self, other):     
+
+    '''Custom Equal to function that checks if the two pieces are from the same team and 
+        if their type is same to determine if they are the same. 
+        @Returns Boolean indicating if two pieces are equal or not. 
+    '''
+    def __eq__(self, other) -> Boolean:     
         if (other == None):
             return False    
         return (self.team == other.team) and (self.type == other.type)
@@ -136,6 +175,10 @@ class Piece():
 
 
     def attack(self,opponent) -> Boolean:
+        '''
+        Determines if a Piece can attack it's Opponent Piece
+        @Returns Boolean indicating if the attack is possible or not
+        '''
         #Doesn't check if same or diff team, assumes its diff team. 
         if self.type.value >= opponent.type.value: #In general if higher (or eq) rank...
             if not (self.type == PieceType.Elephant and opponent.type == PieceType.Rat): #Elephant cant eat rat
@@ -148,6 +191,11 @@ class Piece():
     
 
 class Square():
+    '''
+        The Square class represents an individual unit of the board. 
+        This Square class is responsible for housing the pieces as well as checking most of the rules 
+        of the game. 
+    '''
     def __init__(self,type,row,col,model) -> None:
         self.type : SquareType = type
         self.occupiedPiece : Piece = None
@@ -158,12 +206,21 @@ class Square():
     ## Auxlery Functions ------------------------------------------------------------------------------------------------------------------------
 
     def _jumpElligible(self,piece: Piece) -> Boolean:
-        #Checks if a piece is elligible to make the jump
+        '''
+        Checks if a piece is elligible to make the jump
+        @Returns Boolean indivating the elligibility
+        '''
+        
         return (piece.type == PieceType.Tiger or piece.type == PieceType.Lion) #Is the piece a Tiger or a Lion?
 
 
     def _withinOneSquare(self,piece: Piece) -> Boolean:
-        #Implements the rule that makes sure the piece is moving ONE square only verticall/horizonally but not diagonally.
+        '''
+        Implements the rule that makes sure the piece is
+        moving ONE square only verticall/horizonally but not diagonally.
+        @Returns Boolean  indiciating if the piece is within one square.
+        '''
+        
         currentLocation = piece.location
         if currentLocation.row == self.row:
             #If same row...
@@ -178,7 +235,11 @@ class Square():
         else: return False  #Diagonally or too far away.
 
     def _ownDen(self,piece: Piece) -> Boolean:
-        #Checks if piece is an ally piece trying to move to it's own den.
+        ''''
+        Checks if piece is an ally piece trying to move to it's own den.
+        @Returns Boolean Indicating the Piece attempted to move it it's own team's den
+        '''
+        
         if self.type == SquareType.Den: #Checks if the square is a den square to begin with
             #Checks if den and piece are from same team
             if (piece.team == Player.One) and (self.row == 0):
@@ -196,8 +257,12 @@ class Square():
         
 
     def _validJump(self,piece: Piece) -> Boolean: 
-        #Will check if elligible piece is making a valid jump! assume it's an elligible piece already. ( by using _jumpElligible())
-        #X1 = Oirign, Y1 = Destination
+        '''
+        Will check if elligible piece is making a valid jump! assume it's an elligible piece already. ( by using _jumpElligible())
+        X1 = Oirign, Y1 = Destination
+        @Returns Boolean Indicating if the jump is valid
+        '''
+        
         X1 = (piece.location.row,piece.location.col)
         Y1 = (self.row,self.col)
 
@@ -210,13 +275,17 @@ class Square():
                 return False 
         return False  
 
-    def _attemptAttack(self,piece: Piece) -> str: # UNFINISHED
-        #Will check if the attack is elligible
-        # Scenarios: 
-        #     1. Cross Border Attack Check 
-        #     2. If Rank is followed 
-        #     3. If Victim in Den Square
-        #     4. Jump attack in presence of intervening square.
+    def _attemptAttack(self,piece: Piece) -> str: 
+        '''
+         Will check if the attack is elligible
+        Scenarios: 
+            1. Cross Border Attack Check 
+            2. If Rank is followed 
+            3. If Victim in Den Square
+            4. Jump attack in presence of intervening square.
+        @Returns String Indicating the result of attempt
+        '''
+       
       
 
         #3
@@ -233,7 +302,10 @@ class Square():
         return "Inelligible Attack"
 
     def _attack(self,piece : Piece) -> str:
-        #Attacks and occupies
+        '''
+        Attacks and occupies
+        @Returns String indicating the result of attack attempt
+        '''
         statement = f"Succesfully attacked {self.occupiedPiece.type}"
             #Logs for model to track state of game
         if self.occupiedPiece.type == Player.One:
@@ -249,8 +321,13 @@ class Square():
         self.model.changeTurns()
         return statement
 
-    def _crossBorderAttack(self,piece: Piece)-> str:
-        #Assumes piece is a rat piece 
+    def _crossBorderAttack(self,piece: Piece)-> Boolean:
+        '''
+        Checks logic on if the attack is a cross border attack. 
+        The function Assumes provided piece is a rat piece 
+        @Returns Boolean indicating if it's a cross border attack
+        '''
+        
         return self.type != piece.location.type
         
     def _occupy(self,piece: Piece) -> str:
@@ -269,7 +346,11 @@ class Square():
 
     ##Intent Functions ------------------------------------------------------------------------------------------------------------------------
 
-    def tryToOccupy(self,piece: Piece) -> str: # UNFINISHED
+    def tryToOccupy(self,piece: Piece) -> str: 
+        '''
+        Attempts to occupy a Square by the string.
+        @Returns the result of the occupation move
+        '''
 
          #If vacant square, checks if further rules are followed
         #If one square rule is followed
@@ -307,8 +388,13 @@ class Square():
     
 
     
-    def empty(self) -> Boolean: #Mostly ( should work)
-        #Called to remove piece from old square when located to new square
+    def empty(self) -> Boolean: 
+        '''
+        Called to remove piece from old square when located to new square
+        @Returns Boolean on if the operation was succesful 
+        //ERRCD: 23
+        '''
+        
         piece = self.occupiedPiece
         if  piece != None and piece.location != self: #If there is an occupied piece which is referencing another square
             self.occupiedPiece = None 

@@ -4,11 +4,12 @@ from blessed import Terminal
 from Model import * 
 
 class Game():
+    '''View Controller of the Game. The Game Class concerns with transfer of information between the Model and Display class'''
     term = Terminal() #Used for formatting terminal text
     dashboardText = "Welcome to JungleBoard" #Dashboard Text display useful info regarding stages of the game (e.g piece occupied/player attacked)
-    model = Model() 
+    model = Model() #Model class responsible for game logic
     def __init__(self):
-        self.board = self.updateBoard() 
+        self.board = self.updateBoard()  #Obtains and prepares the latest board from the model to present to display.
         
         self.display = Display(game=self)        
         
@@ -58,7 +59,7 @@ class Game():
     def __isFinished(self) -> Boolean:
         '''
         Checks the two logic of the game to determine if the game is finsihed
-        @returns Boolean 
+        @returns Boolean indicating if the game is finished. 
         '''
         if self.model.deadPiecesPlayerOne == 9:
             self.model.winner = Player.Two
@@ -97,8 +98,12 @@ class Game():
         self.board = self.updateBoard() 
 
     def _isDenCaptured(self) -> Boolean:
-        #Checks if both the boards have presence of enemy Piece
-        #Assumes a den can't be occupied by same team
+        '''
+        Checks if both the boards have presence of enemy Piece
+        Assumes a den can't be occupied by same team
+
+        @Returns Boolean on wether the Den is captured or not
+        '''
         if self.model.board[0][3].occupiedPiece != None:
             self.model.winner = Player.Two
             return True
@@ -109,6 +114,10 @@ class Game():
         
     
     def __feedbackLoop(self) -> None:
+        '''The Feedback Loop initiates the continous chain of Input -> State Update -> Output.
+        This continues until it's determined that the game is finished. 
+        
+        '''
         while not self.__isFinished():            
             self.display.drawBoard()
             input = self.display.takeInput()
