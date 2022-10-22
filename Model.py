@@ -74,13 +74,15 @@ class Model():
         coordinate = self._getCoordinate(position = position)
         piece = self.board[coordinate[0]][coordinate[1]].occupiedPiece 
 
+        if piece == None : 
+            return f"No Piece Exists in position {position} "
+
         if piece.team != self.playerTurn:
             return f"You can't choose Opponent's Piece!"
 
         self.selectedPiece = piece
 
-        if piece == None : 
-            return f"No Piece Exists in position {position} "
+       
 
 
         return f"You have selected {piece.type}" 
