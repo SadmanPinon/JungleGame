@@ -310,10 +310,10 @@ class Square():
         '''
         statement = f"Succesfully attacked {self.occupiedPiece.type}"
             #Logs for model to track state of game
-        if self.occupiedPiece.type == Player.One:
-            self.model.deadPiecesPlayerOne += 1
+        if piece.type == Player.One:
+            self.model.deadPiecesPlayerTwo += 1
         else:
-            self.model.deadPiecesPlayerTwo += 1 
+            self.model.deadPiecesPlayerOne += 1 
 
         #Removes Reference
         piece.location.occupiedPiece = None 
