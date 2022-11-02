@@ -310,9 +310,12 @@ class Square():
         '''
         statement = f"Succesfully attacked {self.occupiedPiece.type}"
             #Logs for model to track state of game
+
         if self.occupiedPiece.type == Player.One:
+            print("player one died")
             self.model.deadPiecesPlayerOne += 1
         else:
+            print("player 2 died")
             self.model.deadPiecesPlayerTwo += 1 
 
         #Removes Reference
