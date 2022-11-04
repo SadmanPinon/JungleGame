@@ -19,7 +19,7 @@ from Constants import *
 class TestModel(unittest.TestCase):
     
     # Test Intent Functions ----------------------------
-    def test_changeTurnsP1(self):
+    def test_changeTurns1(self):
         '''
         Tests if the model can change from player 1 to player 2
 
@@ -32,7 +32,7 @@ class TestModel(unittest.TestCase):
         model.changeTurns()
         self.assertEqual(model.playerTurn, Player.Two)
         self.assertEqual(model.selectedPiece, None)
-    def test_changeTurnsP2(self):
+    def test_changeTurns2(self):
         model = Model()
         model.playerTurn = Player.Two
         model.selectedPiece = Piece(player=Player.Two, location=model.board[0][0], type=PieceType.Lion)
@@ -41,7 +41,45 @@ class TestModel(unittest.TestCase):
         self.assertEqual(model.playerTurn, Player.One)
         self.assertEqual(model.selectedPiece, None)
 
+
     # Test Auxilery Functions ----------------------------
+    def test_initializeBoard1(self):
+        model = Model()
+        model.board = None #Resets the board to remove factor of other functions
+        model.__initializeBoard()
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) in riverAreas:
+                    self.assertEqual(model.board[row][col].type,SquareType.Water)
+
+    def test_initializeBoard2(self):
+        model = Model()
+        model.board = None #Resets the board to remove factor of other functions
+        model.__initializeBoard()
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) in trapAreas:
+                    self.assertEqual(model.board[row][col].type,SquareType.Trap)
+
+    def test_initializeBoard3(self):
+        model = Model()
+        model.board = None #Resets the board to remove factor of other functions
+        model.__initializeBoard()
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) in denAreas:
+                    self.assertEqual(model.board[row][col].type,SquareType.Den)
+
+    def test_initializeBoard4(self):
+        model = Model()
+        model.board = None #Resets the board to remove factor of other functions
+        model.__initializeBoard()
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) not in riverAreas and (row, col) not in trapAreas and (row, col) not in denAreas :
+                    self.assertEqual(model.board[row][col].type,SquareType.Normal)
+                     
+
 
     # Other Functions ----------------------------
     
