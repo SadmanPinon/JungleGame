@@ -872,6 +872,7 @@ class UnitTestCase(unittest.TestCase):
             model = Model()
             sq = Square(SquareType.Normal,1,1,model)
             acc = sq._jumpElligble(Piece(PieceType.Lion,sq,Player.One))
+            self.assertIn(acc,True)
 
         def test_occupy1(self):
             pass
