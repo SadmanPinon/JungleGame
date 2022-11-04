@@ -114,9 +114,19 @@ class TestModel(unittest.TestCase):
     # Test Intent Functions ----------------------------
     def test_changeTurns1(self):
         '''
-        Tests if the model can change from player 1 to player 2
+              test_changeTurns1 tests the integrity of the changeTurns function
 
-        tested by crea
+              1.Functionality Tested : Tests if Player One is being Changed to Player Two and selected Piece is None
+
+              2. How It's Tested :
+                 Initialize a new model
+                 Set the model's playerTurn to Player.One
+                 Selects a random Piece as the model class's selectedPiece
+                 Invokes the changeTurns() function
+
+              3. Expected Outcome :
+                  Player Turn should be Player Two
+                  SelectedPiece should be null
         '''
         model = Model()
         model.playerTurn = Player.One
@@ -126,6 +136,22 @@ class TestModel(unittest.TestCase):
         self.assertEqual(model.playerTurn, Player.Two)
         self.assertEqual(model.selectedPiece, None)
     def test_changeTurns2(self):
+
+        '''
+          test_changeTurns2 tests the integrity of the changeTurns function
+
+          1.Functionality Tested : Tests if Player Two is being Changed to Player One and selected Piece is None
+
+          2. How It's Tested :
+             Initialize a new model
+             Set the model's playerTurn to Player.Two
+             Selects a random Piece as the model class's selectedPiece
+             Invokes the changeTurns() function
+
+          3. Expected Outcome :
+              Player Turn should be Player One
+              SelectedPiece should be null
+        '''
         model = Model()
         model.playerTurn = Player.Two
         model.selectedPiece = Piece(player=Player.Two, location=model.board[0][0], type=PieceType.Lion)
@@ -133,78 +159,27 @@ class TestModel(unittest.TestCase):
         model.changeTurns()
         self.assertEqual(model.playerTurn, Player.One)
         self.assertEqual(model.selectedPiece, None)
-
-
-    # Test Auxilery Functions ----------------------------
-    def test_initializeBoard1(self):
-        model = Model()
-        model.board = None #Resets the board to remove factor of other functions
-        model.__initializeBoard()
-        for row in range(9):
-            for col in range(0, 7):
-                if (row, col) in riverAreas:
-                    self.assertEqual(model.board[row][col].type,SquareType.Water)
-
-    def test_initializeBoard2(self):
-        model = Model()
-        model.board = None #Resets the board to remove factor of other functions
-        model.__initializeBoard()
-        for row in range(9):
-            for col in range(0, 7):
-                if (row, col) in trapAreas:
-                    self.assertEqual(model.board[row][col].type,SquareType.Trap)
-
-    def test_initializeBoard3(self):
-        model = Model()
-        model.board = None #Resets the board to remove factor of other functions
-        model.__initializeBoard()
-        for row in range(9):
-            for col in range(0, 7):
-                if (row, col) in denAreas:
-                    self.assertEqual(model.board[row][col].type,SquareType.Den)
-
-    def test_initializeBoard4(self):
-        model = Model()
-        model.board = None #Resets the board to remove factor of other functions
-        model.__initializeBoard()
-        for row in range(9):
-            for col in range(0, 7):
-                if (row, col) not in riverAreas and (row, col) not in trapAreas and (row, col) not in denAreas :
-                    self.assertEqual(model.board[row][col].type,SquareType.Normal)
-                     
-
-
-    # Other Functions ----------------------------
-    
-    def test_getCoordinate(self):
-        model = Model()
-        act = model._getCoordinate('1A')
-        self.assertEqual(act, (0, 0))
-    def test_attempt(self):
+    def test_changeTurns3(self):
         '''
-    test_attempt checks if random pieces are able to move to various
-    locations on the board
+          test_changeTurns3 tests the integrity of the changeTurns function
 
-    if the piece should not be able to go to the location
-    the user is notified that it is an invalid jump
-    if the piece should be able to move to that location
-    it notifies the user by saying
-    successfully moved piece to square
-    '''
-        model = Model()
-        model.selectPiece('1A')
-        self.assertEqual(model.attemptMove('3A'), 'Invalid Jump attempted!')
-        self.assertEqual(model.attemptMove('9G'), 'Invalid Jump attempted!')
-        self.assertEqual(model.attemptMove('6B'), 'Invalid Jump attempted!')
-        self.assertEqual(model.attemptMove('1A'), 'Invalid Jump attempted!')
-        self.assertEqual(model.attemptMove(
-            '2A'), 'Succesfully moved piece to square (2, \'A\')')
-        self.assertEqual(model.playerTurn, Player.Two)
-    def test_change_player(self):
+          1.Functionality Tested : Tests if the function can invoke the current turn when repeatedly being called
+
+          2. How It's Tested :
+             Initialize a new model
+             @Checks Player Turn to see if it's 1
+             invokes the function
+             @Checks Player Turn to see if It's 2
+             Invokes the function twice to simulate repeated calling 
+             @Checks Player Turn to see if It's 2
+
+
+          3. Expected Outcome :
+              Outcome 1 : Player.One
+              Outcome 2 : Player.Two
+              Outcome 3 : Player.Two
         '''
-    test_change_player checks if the models is able to
-    change the 'turn' of the player
-    '''
+
         model = Model()
         self.assertEqual(model.playerTurn, Player.One)
         model.changeTurns()
@@ -212,195 +187,84 @@ class TestModel(unittest.TestCase):
         model.changeTurns()
         model.changeTurns()
         self.assertEqual(model.playerTurn, Player.Two)
-    def test_if_others_can_jump(self):
+
+  
+    
+                     
+
+
+    # Other Functions ----------------------------
+    
+    def test_getCoordinate(self):
         '''
-    test_if_other_can_jump checks if the others can jump
-    across river tiles
+              test_getCoordinate tests the integrity of the getCoordinate function
 
-    other pieces should not be able to jump across the river
+              1.Functionality Tested : Test if the function is accurately translating human friendly coordinate to machine
+              readable coordinate.
 
-    initially the pieces are moved into position prior to the
-    test being performed
-    '''
-        model = Model()
-        model.selectPiece('2B')
-        model.attemptMove('3B')
+              2. How It's Tested :
+                 Initialize a new model
+                 Two Instances of ...
+                         invoke the get_coordinate function
+                         check if the output is same as what's expected
 
-        model.selectPiece('9A')
-        model.attemptMove('9B')
-
-        model.selectPiece('3B')
-        model.attemptMove('7B')
-        # there should not be a piece on square 7B
-        self.assertEqual(model.board[6][1].occupiedPiece, None)
-        # check if the dog is still on 3B
-        self.assertEqual(model.board[2][1].occupiedPiece.type, PieceType.Dog)
-    def test_player_two_kill(self):
+              3. Expected Outcome :
+                  act : 0,0 is expected
+                  act : 6,0 is expected
         '''
-    test_player_two_kill checks if it is possible for player 2's pieces
-    to kill player 1's pieces
-
-    this is done between player 2's rat and player 1's elephant
-    '''
         model = Model()
 
-        model.changeTurns()
-        model.selectPiece('7G')
-        model.attemptMove('6G')
+        act = model._getCoordinate('1A')
+        self.assertEqual(act, (0, 0))
 
-        model.changeTurns()
-        model.selectPiece('6G')
-        model.attemptMove('5G')
+        act2 = model._getCoordinate('7G')
+        self.assertEqual(act2, (6, 6))
 
-        model.changeTurns()
-        model.selectPiece('5G')
-        model.attemptMove('4G')
 
-        model.changeTurns()
-        model.selectPiece('4G')
-        model.attemptMove('3G')
-
-        self.assertEqual(model.deadPiecesPlayerOne, 1)
-    def test_is_intervened(self):
+    def test_attempt1(self):
         '''
-    similar to the test_interving
-    test_is_intervened checks the direct function
-    to see if between two positions there is a piece
-    to test if this is true various pieces are moved
-    and various different positions are checked
-    '''
-        model = Model()
-        self.assertEqual(model.isIntervened((0, 1), (2, 1)), True)
+              test_attempt1 tests the integrity of the attempt function
 
-        model.selectPiece('1A')
-        model.attemptMove('2A')
+              1.Functionality Tested : Tests if the function fails to attempt when illegal move performed
 
-        self.assertEqual(model.isIntervened((0, 0), (0, 4)), False)
+              2. How It's Tested :
+                 Initialize a new model
+                 Selects a Piece to move
+                 Performs various combinations of moves by invoking attemptMove(), all of which are illegal moves.
 
-        model.selectPiece('7G')
-        model.attemptMove('6G')
-
-        model.selectPiece('2A')
-        model.attemptMove('1A')
-
-        model.selectPiece('6G')
-        model.attemptMove('6F')
-
-        self.assertEqual(model.isIntervened((5, 3), (5, 6)), True)
-
-        self.assertEqual(model.isIntervened((0, 1), (0, 4)), False)
-    def test_attack_own_den_p1(self):
+              3. Expected Outcome :
+                  "Invalid Jump Attempted" for ALL cases
         '''
-       test_attack_own_den_p1 checks if player 1 can attack their own den
-
-       like all functions initialize a new model functions to start
-       with a fresh board
-
-       Since the function checks for player 1 it always skips player 2's turn
-       To speed up the coding the program moves the piece on square 91
-       which is the tiger piece
-       and move it from 1A to 1B
-       and then from 1B to 1C
-       then 1C to 1D
-
-       note:
-       first we have to select the piece using the selectPiece function
-       and then move the piece using the attemptMove function
-       '''
         model = Model()
         model.selectPiece('1A')
-        model.attemptMove('1B')
+        self.assertEqual(model.attemptMove('3A'), 'Invalid Jump attempted!')
+        self.assertEqual(model.attemptMove('9G'), 'Invalid Jump attempted!')
+        self.assertEqual(model.attemptMove('6B'), 'Invalid Jump attempted!')
+        self.assertEqual(model.attemptMove('1A'), 'Invalid Jump attempted!')
 
-        model.changeTurns()
-        model.selectPiece('1B')
-        model.attemptMove('1C')
+        self.assertEqual(model.playerTurn, Player.One)
 
-        model.changeTurns()
-
-        model.selectPiece('1C')
-        self.assertEqual(model.attemptMove('1D'), "Illegal Move! You tried to move to your own den square")
-
-    def test_if_lion_can_jump(self):
+    def test_attempt2(self):
         '''
-    test_if_lion_can_jump checks if the lion can jump
-    across river tiles
+          test_attempt2 tests the integrity of the attempt function
 
-    a lion should be possible to do this
+          1.Functionality Tested : Tests if the function succesfully moves when a legal move is performed.
 
-    initially the lion is moved into position prior to the
-    test being performed
-    '''
+          2. How It's Tested :
+             Initialize a new model
+             Selects a Piece to move
+             Performs a legal move by invoking attemptMove()
+
+          3. Expected Outcome :
+                AssertEqual suceeds with matching the output "Succesfully moved piece to square (2, \'A\')"
+        '''
         model = Model()
-
-        model.selectPiece('3A')
-        model.attemptMove('4A')
-
-        model.selectPiece('9A')
-        model.attemptMove('9B')
-
         model.selectPiece('1A')
-        model.attemptMove('2A')
+        self.assertEqual(model.attemptMove('2A'), 'Succesfully moved piece to square (2, \'A\')')
+        self.assertEqual(model.playerTurn, Player.Two)
 
-        model.selectPiece('9B')
-        model.attemptMove('9A')
+    def test_attemptMove3(self):
 
-        model.selectPiece('2A')
-        model.attemptMove('3A')
-
-        model.selectPiece('9A')
-        model.attemptMove('9B')
-
-        model.selectPiece('3A')
-        model.attemptMove('3B')
-
-        model.selectPiece('9B')
-        model.attemptMove('9A')
-
-        model.selectPiece('3B')
-        model.attemptMove('7B')
-
-        self.assertEqual(model.board[6][1].occupiedPiece.type, PieceType.Lion)
-    def test_if_tiger_can_jump(self):
-        '''
-    test_if_tiger_can_jump checks if the tiger can jump
-    across river tiles
-
-    a tiger should be possible to do this
-
-    initially the lion is moved into position prior to the
-    test being performed
-    '''
-        model = Model()
-
-        model.selectPiece('3G')
-        model.attemptMove('4G')
-
-        model.selectPiece('9A')
-        model.attemptMove('9B')
-
-        model.selectPiece('1G')
-        model.attemptMove('2G')
-
-        model.selectPiece('9B')
-        model.attemptMove('9A')
-
-        model.selectPiece('2G')
-        model.attemptMove('3G')
-
-        model.selectPiece('9A')
-        model.attemptMove('9B')
-
-        model.selectPiece('3G')
-        model.attemptMove('3F')
-
-        model.selectPiece('9B')
-        model.attemptMove('9A')
-
-        model.selectPiece('3F')
-        model.attemptMove('7F')
-
-        self.assertEqual(model.board[6][5].occupiedPiece.type, PieceType.Tiger)
-    def test_attack_rat_elephant_from_water(self):
         '''
     test_attack_rat_elephant_from_water checks if a rat can
     attack an elephant from the water
@@ -442,33 +306,22 @@ class TestModel(unittest.TestCase):
             model.board[5][0].occupiedPiece.type, PieceType.Elephant)
         # test if the rat is still on 6B in the water
         self.assertEqual(model.board[5][1].occupiedPiece.type, PieceType.Rat)
-    def test_unselect(self):
-        '''
-        test_unselect checks if the program is able to unselec the currently selected piecce
-        so that other pieces can be chosen
-
-        checks various cases of unselecting and sees if nothing breaks
-        '''
-        # check if unselect works in normal case
-        model = Model()
-        model.selectPiece('1A')
-        self.assertEqual(model.selectedPiece.type, PieceType.Lion)
-        model.unselect()
-        self.assertEqual(model.selectedPiece, None)
-
-        # check if unselect works if nothing is selected
-        self.assertEqual(model.unselect(), 'Piece unselected')
-        self.assertEqual(model.unselect(), 'Piece unselected')
-        self.assertEqual(model.unselect(), 'Piece unselected')
-
-        # check if unselect works after multiple state changes
-        model.selectPiece('1A')
-        model.selectPiece('3A')
-        model.selectPiece('2B')
-        model.unselect()
-        self.assertEqual(model.selectedPiece, None)
 
     def test_select_piece1(self):
+        '''
+              test_select_piece1 tests the selectPiece function
+
+              1.Functionality Tested : test if you can cannot select other player's pieces
+
+              2. How It's Tested :
+                 Initialize a new model
+                 Try to select all of the opponents pieces player 1
+                 switch pplayer
+                 Try to select all of the opponents pieces as player 2
+
+              3. Expected Outcome :
+                You can't choose Opponent's Piece!
+        '''
         wrong_select = "You can't choose Opponent's Piece!"
         model = Model()
         # player 1's turn trying to select opponent's piece
@@ -495,6 +348,20 @@ class TestModel(unittest.TestCase):
         self.assertEqual(model.selectPiece('3G'), wrong_select)
 
     def test_select_piece2(self):
+        '''
+               test_select_piece1 tests the selectPiece function
+
+               1.Functionality Tested : test if you can cannot select squares with no pieces
+
+               2. How It's Tested :
+                  Initialize a new model
+                  Try to select all of the squares with no pieces player 1
+                  switch pplayer
+                  Try to select all of the squares with no pieces as player 2
+
+               3. Expected Outcome :
+                 No Piece Exists in position
+         '''
         model = Model()
         n = "No Piece Exists in position"
 
@@ -595,7 +462,22 @@ class TestModel(unittest.TestCase):
         self.assertIn(n, model.selectPiece('9D'))
         self.assertIn(n, model.selectPiece('9E'))
         self.assertIn(n, model.selectPiece('9F'))
+
     def test_select_piece3(self):
+        '''
+               test_select_piece1 tests the selectPiece function
+
+               1.Functionality Tested : test if you can cannot select squares with no pieces
+
+               2. How It's Tested :
+                  Initialize a new model
+                  Try to select all of the pieces of pieces player 1
+                  switch pplayer
+                  Try to select all of the pieces of pieces as player 2
+
+               3. Expected Outcome :
+                "You have selected "
+         '''
         model = Model()
         s = "You have selected "
         # try to select own pieces
@@ -618,14 +500,132 @@ class TestModel(unittest.TestCase):
         self.assertIn(s, model.selectPiece('8F'))
         self.assertIn(s, model.selectPiece('7G'))
         self.assertIn(s, model.selectPiece('9G'))
-    def test_attack_own_den_p2(self):
+    def test_validJump(self):
         '''
-    test_attack_own_den_p2 checks if player 2 can attack their own den
+    FUNCTIONALITY: test_if_other_can_jump checks if the others can jump
+    across river tiles other pieces should not be able to jump across the river
 
+    HOW IT IS DONE: initially the pieces are moved into position prior to the
+    test being performed
+    then check if the square where the piece jumped from is empty and the square
+    that the piece should be are none and piece respectively
+
+    EXPCETED RESULT:
+    NONE, PIECETYPE.DOG
+    '''
+        model = Model()
+        model.selectPiece('2B')
+        model.attemptMove('3B')
+
+        model.selectPiece('9A')
+        model.attemptMove('9B')
+
+        model.selectPiece('3B')
+        model.attemptMove('7B')
+        # there should not be a piece on square 7B
+        self.assertEqual(model.board[6][1].occupiedPiece, None)
+        # check if the dog is still on 3B
+        self.assertEqual(model.board[2][1].occupiedPiece.type, PieceType.Dog)
+    def test_attack(self):
+        '''
+    FUNCTIONALITY: test_player_two_kill checks if it is possible for player 2's pieces
+    to kill player 1's pieces
+
+    HOW IT IS DONE: this is done between player 2's rat and player 1's elephant
+    
+    EXPECTED RESULT: DEADPIECES PLAYER 1 = 1
+    '''
+        model = Model()
+
+        model.changeTurns()
+        model.selectPiece('7G')
+        model.attemptMove('6G')
+
+        model.changeTurns()
+        model.selectPiece('6G')
+        model.attemptMove('5G')
+
+        model.changeTurns()
+        model.selectPiece('5G')
+        model.attemptMove('4G')
+
+        model.changeTurns()
+        model.selectPiece('4G')
+        model.attemptMove('3G')
+
+        self.assertEqual(model.deadPiecesPlayerOne, 1)
+    def test_isIntervened(self):
+        '''
+    FUNCTIONALITY:similar to the test_interving
+    
+    HOW IT IS DONE: test_is_intervened checks the direct function
+    to see if between two positions there is a piece
+    to test if this is true various pieces are moved
+    and various different positions are checked
+    
+    EXPECTED RESULT:
+    TRUE, FALSE,TRUE, FALSE
+    '''
+        model = Model()
+        self.assertEqual(model.isIntervened((0, 1), (2, 1)), True)
+
+        model.selectPiece('1A')
+        model.attemptMove('2A')
+
+        self.assertEqual(model.isIntervened((0, 0), (0, 4)), False)
+
+        model.selectPiece('7G')
+        model.attemptMove('6G')
+
+        model.selectPiece('2A')
+        model.attemptMove('1A')
+
+        model.selectPiece('6G')
+        model.attemptMove('6F')
+
+        self.assertEqual(model.isIntervened((5, 3), (5, 6)), True)
+
+        self.assertEqual(model.isIntervened((0, 1), (0, 4)), False)
+    def test_ownDen(self):
+        '''
+       FUNCTIONALITY: test_attack_own_den_p1 checks if player 1 can attack their own den
+       like all functions initialize a new model functions to start
+       with a fresh board
+
+       HOW IT IS DONE: Since the function checks for player 1 it always skips player 2's turn
+       To speed up the coding the program moves the piece on square 91
+       which is the tiger piece
+       and move it from 1A to 1B
+       and then from 1B to 1C
+       then 1C to 1D
+
+       note:
+       first we have to select the piece using the selectPiece function
+       and then move the piece using the attemptMove function
+
+       EXPECTED RESULT:
+       "Illegal Move! You tried to move to your own den square"
+       '''
+        model = Model()
+        model.selectPiece('1A')
+        model.attemptMove('1B')
+
+        model.changeTurns()
+        model.selectPiece('1B')
+        model.attemptMove('1C')
+
+        model.changeTurns()
+
+        model.selectPiece('1C')
+        self.assertEqual(model.attemptMove('1D'), "Illegal Move! You tried to move to your own den square")
+
+    def test_ownDen2(self):
+        '''
+    FUNCTIONALITY: test_ownDen2 checks if player 2 can attack their own den
     like all functions initialize a new model functions to start
     with a fresh board
 
-    Since the function checks for player 2 it always skips player 1's turn
+    HOW IT IS DONE: Since the function checks for player 2 it always skips player 1's turn
     To speed up the coding the program moves the piece on square 9A
     which is the tiger piece
     and move it from 9A to 9B
@@ -635,6 +635,9 @@ class TestModel(unittest.TestCase):
     note:
     first we have to select the piece using the selectPiece function
     and then move the piece using the attemptMove function
+
+    EXPECTED RESULT:
+    "Illegal Move! You tried to move to your own den square"
     '''
         model = Model()
         model.changeTurns()
@@ -649,75 +652,154 @@ class TestModel(unittest.TestCase):
 
         model.selectPiece('9C')
         self.assertEqual(model.attemptMove('9D'), "Illegal Move! You tried to move to your own den square")
-    def test_piece_attack_rat_attack_elephant(self):
+    def test_elligibleJump(self):
         '''
-    test_piece_attack_rat_attack_elephant
-    checks if a rat is able to attack an elephant without dying
+    FUNCTIONALITY:test_if_lion_can_jump checks if the lion can jump
+    across river tiles
 
-    it also checks if the correct counter is incremented for deaths
-    in this case it should be player 2 as the program
-    uses player 1's rat and player 2's elephant
+    a lion should be possible to do this
+
+    HOW IT IS DONE:   initially the lion is moved into position prior to the
+    test being performed
+
+    EXPECTED RESULT:
+    SQUARE(6,1) is occupied by LION
     '''
         model = Model()
 
-        # p1
         model.selectPiece('3A')
         model.attemptMove('4A')
 
-        # p2
-        model.selectPiece('7A')
-        model.attemptMove('6A')
-
-        # p1
-        model.selectPiece('4A')
-        model.attemptMove('5A')
-
-        # p2
         model.selectPiece('9A')
-        model.attemptMove('8A')
+        model.attemptMove('9B')
 
-        model.selectPiece('5A')
-        model.attemptMove('6A')
+        model.selectPiece('1A')
+        model.attemptMove('2A')
 
-        self.assertEqual(model.board[5][0].occupiedPiece.type, PieceType.Rat)
-        self.assertEqual(model.deadPiecesPlayerTwo, 1)
-    def test_if_other_pieces_can_move_into_water(self):
+        model.selectPiece('9B')
+        model.attemptMove('9A')
+
+        model.selectPiece('2A')
+        model.attemptMove('3A')
+
+        model.selectPiece('9A')
+        model.attemptMove('9B')
+
+        model.selectPiece('3A')
+        model.attemptMove('3B')
+
+        model.selectPiece('9B')
+        model.attemptMove('9A')
+
+        model.selectPiece('3B')
+        model.attemptMove('7B')
+
+        self.assertEqual(model.board[6][1].occupiedPiece.type, PieceType.Lion)
+    def test_elligibleJump2(self):
         '''
-        test_if_other_pieces_can_move_into_water tests if pieces
+    FUNCTIONALITY: test_if_tiger_can_jump checks if the tiger can jump
+    across river tiles
+
+    HOW IT IS DONE: initially the lion is moved into position prior to the
+    test being performed
+
+    EXPECTED RESULT:
+    SQUARE(6,1) is occupied by TIGER
+    '''
+        model = Model()
+
+        model.selectPiece('3G')
+        model.attemptMove('4G')
+
+        model.selectPiece('9A')
+        model.attemptMove('9B')
+
+        model.selectPiece('1G')
+        model.attemptMove('2G')
+
+        model.selectPiece('9B')
+        model.attemptMove('9A')
+
+        model.selectPiece('2G')
+        model.attemptMove('3G')
+
+        model.selectPiece('9A')
+        model.attemptMove('9B')
+
+        model.selectPiece('3G')
+        model.attemptMove('3F')
+
+        model.selectPiece('9B')
+        model.attemptMove('9A')
+
+        model.selectPiece('3F')
+        model.attemptMove('7F')
+
+        self.assertEqual(model.board[6][5].occupiedPiece.type, PieceType.Tiger)
+    def test_unselect(self):
+        '''
+        FUNCTIONALITY: test_unselect checks if the program is able to unselec the currently selected piecce
+        so that other pieces can be chosen
+
+        HOW IT IS DONE: checks various cases of unselecting and sees if nothing breaks
+
+        EXPECTED RESULT: 'Piece unselected'
+        '''
+        # check if unselect works in normal case
+        model = Model()
+        model.selectPiece('1A')
+        self.assertEqual(model.selectedPiece.type, PieceType.Lion)
+        model.unselect()
+        self.assertEqual(model.selectedPiece, None)
+
+        # check if unselect works if nothing is selected
+        self.assertEqual(model.unselect(), 'Piece unselected')
+        self.assertEqual(model.unselect(), 'Piece unselected')
+        self.assertEqual(model.unselect(), 'Piece unselected')
+
+        # check if unselect works after multiple state changes
+        model.selectPiece('1A')
+        model.selectPiece('3A')
+        model.selectPiece('2B')
+        model.unselect()
+        self.assertEqual(model.selectedPiece, None)
+    def test_waterElligible(self):
+        '''
+        FUNCTIONALITY: test_if_other_pieces_can_move_into_water tests if pieces
         other than the rat can enter the water
 
-        this is done by taking the leopard piece located at 3C and moving it
+        HOW IT IS DONE:this is done by taking the leopard piece located at 3C and moving it
         to 4C
+
+        RESULT:
+        "Illegal Move, You can't move into water. Only Rat(1) Can!"
         '''
         model = Model()
         model.selectPiece('3C')
         self.assertEqual(model.attemptMove('4C'), "Illegal Move, You can't move into water. Only Rat(1) Can!")
     def test_intervening(self):
         '''
-    test_interving
-
-    initializes model and checks if a jumping piece such as a lion or tiger
+    FUNCTIONALITY :test_interving initializes model and checks if a jumping piece such as a lion or tiger
     is able to jump when a rat is in the water
 
-    It starts by moving the mouse piece
+    HOW IT IS DONE: It starts by moving the mouse piece
     from 3A to 4A
     skipping the 2nd player's turn
     and then 4A to 4B
     which is a river square
-
     then the test moves the lion piece
     but first it skips the 2nd players turn
-
     then lion moves 1A to 2A
     skip 2nd player turn
     lion piece 2A -> 3A
-
     skip 2nd player
     lion 3A -> 4A
     skip 2nd player
-
     lion 4A -> 4D
     this however will not work since there's a rat piece in one of the squares
+
+    EXPECTED RESULT:
+    'Invalid Jump attempted!'
     '''
         model = Model()
         model.selectPiece('3A')
@@ -747,20 +829,20 @@ class TestModel(unittest.TestCase):
 
         model.selectPiece('4A')
         self.assertEqual(model.attemptMove('4D'), 'Invalid Jump attempted!')
-    def test_move_piece_same_square(self):
+    def test_tryToOcupy(self):
             '''
-        test_move_piece_same_square checks the output of the game when a user tries to
+
+        FUNCTIONALITY: test_move_piece_same_square checks the output of the game when a user tries to
         move a selected piece onto itself and onto a square thats already occupied
 
+        HOW IT IS DONE:
         first it attempts to move lion piece on 1A to 1A
         resulting in the user being notified
-
         then the program move the piece to 2A
-
         skip player 2's turn
         then try to move 2A to 3A
 
-        which results in another notification to the user
+        RESULT: "This square is already occupied by your Piece"
         '''
             model = Model()
             model.selectPiece('1A')
@@ -776,7 +858,7 @@ class TestPiece(unittest.TestCase):
     #Intent Functions TEST ----------------------
     def test_piece_attack1(self):
         '''
-             test_piece_attackP1_1 tests the integrity of the Piece.attack() function
+             test_piece_attack1 tests the integrity of the Piece.attack() function
 
              1.Functionality Tested : It Checks if a higher value piece can kill a lower valued piece
 
@@ -793,7 +875,7 @@ class TestPiece(unittest.TestCase):
 
     def test_piece_attack2(self):
         '''
-             test_piece_attackP1_2 tests the integrity of the Piece.attack() function
+             test_piece_attack2 tests the integrity of the Piece.attack() function
 
              1.Functionality Tested : It Checks if a rat  piece can kill an elephant piece
 
@@ -1039,19 +1121,41 @@ class TestSquare(unittest.TestCase):
         sq = Square(SquareType.Normal,1,1,model)
         acc = sq._waterElligible(Piece(PieceType.Elephant,sq,Player.One))
         self.assertEqual(acc,False)
-    def test_occupy1(self):
-        pass
-    def test_occupy2(self):
-        pass
 
     # Intent TESTS --------------
     def test_tryToOccupy1(self):
+        '''
+              test_tryToOccupy1 tests the integrity of the tryToOccupy function
+
+              1.Functionality Tested : Tests if a piece is able to move to an invalid positions
+
+              2. How It's Tested :
+                Initialize a new model
+                Initialize a new square on (0,0)
+                Initialize a new Piece on another square far away on (3.3)
+                test if the piece on square (3,3) can move to (0,0)
+              3. Expected Outcome :
+     "Invalid destination. You are out of your range."
+        '''
         model = Model()
         sq1 = Square(SquareType.Normal,0,0,model)
         p1 = Piece(PieceType.Rat,Square(SquareType.Normal,3,3,model),Player.One)
         self.assertEqual(sq1.tryToOccupy(p1),"Invalid destination. You are out of your range.")
 
     def test_tryToOccupy2(self):
+        '''
+              test_tryToOccupy2 tests the integrity of the tryToOccupy function
+
+              1.Functionality Tested : Tests if a piece is able to move, but can jump, to an invalid positions
+
+              2. How It's Tested :
+                Initialize a new model
+                Initialize a new square on (0,0)
+                Initialize a new Piece (Lion) on another square far away on (3.3)
+                test if the piece on square (3,3) can move to (0,0)
+              3. Expected Outcome :
+               "Invalid Jump attempted!"
+        '''
         model = Model()
         sq1 = Square(SquareType.Normal, 0, 0, model)
         p1 = Piece(PieceType.Lion, Square(SquareType.Normal, 3, 3, model), Player.One)
@@ -1059,36 +1163,121 @@ class TestSquare(unittest.TestCase):
 
 
     def test_tryToOccupy3(self):
+        '''
+              test_tryToOccupy3 tests the integrity of the tryToOccupy function
+
+              1.Functionality Tested : Tests if a piece is able to move, but can jump, to their own den square
+
+              2. How It's Tested :
+                Initialize a new model
+                Initialize a new square on (0,0)
+                Initialize a new Piece (Lion) on another square far away on (3.3)
+                test if the piece on square (3,3) can move to (0,0)
+              3. Expected Outcome :
+               "Illegal Move! You tried to move to your own den square"
+        '''
         model = Model()
         sq1 = Square(SquareType.Den, 0, 0, model)
         p1 = Piece(PieceType.Lion, Square(SquareType.Normal, 0, 1, model), Player.One)
         self.assertEqual(sq1.tryToOccupy(p1), "Illegal Move! You tried to move to your own den square")
 
     def test_tryToOccupy4(self):
+        '''
+               test_tryToOccupy4 tests the integrity of the tryToOccupy function
+
+               1.Functionality Tested : Tests if a piece is able to move, but can jump, on a water square
+
+               2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square on (0,0) with type water
+                 Initialize a new Piece (Lion) on another square far away on (3.3)
+                 test if the piece on square (3,3) can move to (0,0)
+               3. Expected Outcome :
+                 "Illegal Move, You can't move into water. Only Rat(1) Can!"
+         '''
         model = Model()
         sq1 = Square(SquareType.Water, 0, 0, model)
         p1 = Piece(PieceType.Lion, Square(SquareType.Normal, 0, 1, model), Player.One)
         self.assertEqual(sq1.tryToOccupy(p1), "Illegal Move, You can't move into water. Only Rat(1) Can!")
 
     def test_tryToOccupy5(self):
-        model = Model()
+        '''
+               test_tryToOccupy5 tests the integrity of the tryToOccupy function
 
-        pass
+               1.Functionality Tested : Tests if a piece is able to move when there's an allied
+               piece
+
+               2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square on (0,0) with wolf piece
+                 Initialize a new Piece (Lion) on another square far away on (0,1)
+                 test if the piece on square (0,1) can move to (0,0)
+               3. Expected Outcome :
+                 "This square is already occupied by your Piece"
+         '''
+        model = Model()
+        model.board[0][0].occupiedPiece = Piece(PieceType.Wolf, model.board[0][0], Player.One)
+        model.board[0][1].occupiedPiece =Piece(PieceType.Lion,model.board[0][1], Player.One)
+        self.assertEqual(model.board[0][0].tryToOccupy(model.board[0][1].occupiedPiece), "This square is already occupied by your Piece")
+
 
     def test_tryToOccupy6(self):
-        model = Model()
+        '''
+               test_tryToOccupy6 tests the integrity of the tryToOccupy function
 
-        pass
+               1.Functionality Tested : Tests if a piece is able to move to its own square
+
+               2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square on (0,0) with a lion piece
+                 Initialize a new Piece (Lion) on another on (0,1)
+                 test if the piece on square (0,1) can move to (0,0)
+               3. Expected Outcome :
+                 "You are already here"
+         '''
+        model = Model()
+        model.board[0][0].occupiedPiece = Piece(PieceType.Lion, model.board[0][0], Player.One)
+        model.board[0][1].occupiedPiece =Piece(PieceType.Lion,model.board[0][1], Player.One)
+        self.assertEqual(model.board[0][0].tryToOccupy(model.board[0][1].occupiedPiece), "You are already here")
 
     def test_tryToOccupy7(self):
-        model = Model()
+        '''
+               test_tryToOccupy7 tests the integrity of the tryToOccupy function
 
-        pass
+               1.Functionality Tested : Tests if a piece is able to attack
+
+               2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square on (0,0) with a Player 2 rat
+                 Initialize a new Piece (Lion) on another square far away on (0,1)
+                 test if the piece on square (0,1) can move to (0,0)
+               3. Expected Outcome :
+                 "Succesfully attacked PieceType.Rat"
+         '''
+        model = Model()
+        model.board[0][0].occupiedPiece = Piece(PieceType.Rat, model.board[0][0], Player.One)
+        model.board[0][1].occupiedPiece =Piece(PieceType.Lion,model.board[0][1], Player.Two)
+        self.assertEqual(model.board[0][0].tryToOccupy(model.board[0][1].occupiedPiece), "Succesfully attacked PieceType.Rat")
+
 
     def test_tryToOccupy8(self):
-        model = Model()
+        '''
+               test_tryToOccupy8 tests the integrity of the tryToOccupy function
 
-        pass
+               1.Functionality Tested : Tests if a piece is able to move
+
+               2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square on (0,0) with type normal
+                 Initialize a new Piece (Lion) on another square far away on (0,1)
+                 test if the piece on square (0,1) can move to (0,0)
+               3. Expected Outcome :
+                 "There was a problem, couldn't leave old square"
+         '''
+        model = Model()
+        sq1 = Square(SquareType.Normal, 0, 0, model)
+        p1 = Piece(PieceType.Lion, Square(SquareType.Normal, 0, 1, model), Player.One)
+        self.assertEqual(sq1.tryToOccupy(p1), "There was a problem, couldn't leave old square")
 
     def test_empty1(self):
         '''
