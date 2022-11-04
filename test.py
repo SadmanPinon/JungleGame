@@ -134,7 +134,45 @@ class TestModel(unittest.TestCase):
         self.assertEqual(model.playerTurn, Player.One)
         self.assertEqual(model.selectedPiece, None)
 
+
     # Test Auxilery Functions ----------------------------
+    def test_initializeBoard1(self):
+        model = Model()
+        model.board = None #Resets the board to remove factor of other functions
+        model.__initializeBoard()
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) in riverAreas:
+                    self.assertEqual(model.board[row][col].type,SquareType.Water)
+
+    def test_initializeBoard2(self):
+        model = Model()
+        model.board = None #Resets the board to remove factor of other functions
+        model.__initializeBoard()
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) in trapAreas:
+                    self.assertEqual(model.board[row][col].type,SquareType.Trap)
+
+    def test_initializeBoard3(self):
+        model = Model()
+        model.board = None #Resets the board to remove factor of other functions
+        model.__initializeBoard()
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) in denAreas:
+                    self.assertEqual(model.board[row][col].type,SquareType.Den)
+
+    def test_initializeBoard4(self):
+        model = Model()
+        model.board = None #Resets the board to remove factor of other functions
+        model.__initializeBoard()
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) not in riverAreas and (row, col) not in trapAreas and (row, col) not in denAreas :
+                    self.assertEqual(model.board[row][col].type,SquareType.Normal)
+                     
+
 
     # Other Functions ----------------------------
     
