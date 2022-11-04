@@ -111,7 +111,7 @@ class TestModel(unittest.TestCase):
                 if (row, col) not in riverAreas and (row, col) not in trapAreas and (row, col) not in denAreas:
                     self.assertEqual(model.board[row][col].type, SquareType.Normal)
 
-    # Test Intent Functions ----------------------------
+   
     def test_changeTurns1(self):
         '''
               test_changeTurns1 tests the integrity of the changeTurns function
@@ -189,7 +189,7 @@ class TestModel(unittest.TestCase):
         self.assertEqual(model.playerTurn, Player.Two)
                
 
-    # Other Functions ----------------------------
+   
     
     def test_getCoordinate(self):
         '''
@@ -851,7 +851,7 @@ class TestModel(unittest.TestCase):
             self.assertIn("This square is already occupied by your Piece", model.attemptMove('3A'))
 
 class TestPiece(unittest.TestCase):
-    #Intent Functions TEST ----------------------
+    
     def test_piece_attack1(self):
         '''
              test_piece_attack1 tests the integrity of the Piece.attack() function
@@ -904,7 +904,7 @@ class TestPiece(unittest.TestCase):
         p1 = Piece(PieceType.Rat, Square(1, 0, 0, model), Player.One)
         self.assertEqual(p1.attack(Piece(PieceType.Wolf, Square(1, 0, 0, model), Player.Two)), False)
 
-    # Auxilery Functions TEST ----------------------
+   
     def test_eq_1(self):
         '''
               test_eq_1 tests the integrity of the Piece.__eq__() function
@@ -1013,9 +1013,9 @@ class TestPiece(unittest.TestCase):
         self.assertEqual(model.board[4][0].occupiedPiece.type, PieceType.Rat)
 
 class TestSquare(unittest.TestCase):
-    #Intent Functions ----------------------------
 
-    # Auxilery Functions TEST ----------------------
+
+ 
     def test_jumpElligible1(self):
         '''
               test_jumpElligible1 tests the integrity of the jumpElligible function
@@ -1074,9 +1074,7 @@ class TestSquare(unittest.TestCase):
         acc = sq._jumpElligible(Piece(PieceType.Rat,sq,Player.One))
         self.assertEqual(acc,False)
 
-    #test_withinOneSquare
-
-    #test ownDen
+ 
 
     def test_waterElligible1(self):
         '''
@@ -1118,7 +1116,7 @@ class TestSquare(unittest.TestCase):
         acc = sq._waterElligible(Piece(PieceType.Elephant,sq,Player.One))
         self.assertEqual(acc,False)
 
-    # Intent TESTS --------------
+ 
     def test_tryToOccupy1(self):
         '''
               test_tryToOccupy1 tests the integrity of the tryToOccupy function
@@ -1333,7 +1331,7 @@ class TestSquare(unittest.TestCase):
         self.assertEqual(square.empty(), False)
 
 def run_some_tests():
-    # Run only the tests in the specified classes
+   
 
     test_classes_to_run = [TestSquare, TestPiece,TestModel]
 
