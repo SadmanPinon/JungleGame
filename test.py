@@ -17,9 +17,102 @@ from Constants import *
 #square.empty() is checked
 #piece.attack() is checked
 class TestModel(unittest.TestCase):
-    
+
+    def test_initializeBoard1(self):
+        '''
+              test_initializeBoard1 tests the integrity of the initializeBoard function
+
+              1.Functionality Tested : checks if the water squares in the board is correctly initialized in their position
+
+              2. How It's Tested :
+                 Initialize a new model
+                 Passes Through Each Row and Column of Board
+                 Checks if the squares on the RiverAreas are indeed SquareType.Water
+                 
+
+
+              3. Expected Outcome :
+                  ALL Squares on the RiverAreas coordinate are supposed to be of type SquareType.Water
+        '''
+        model = Model()
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) in riverAreas:
+                    self.assertEqual(model.board[row][col].type, SquareType.Water)
+
+    def test_initializeBoard2(self):
+        '''
+              test_initializeBoard2 tests the integrity of the initializeBoard function
+
+              1.Functionality Tested : checks if the water squares in the board is correctly initialized in their position
+
+              2. How It's Tested :
+                 Initialize a new model
+                 Passes Through Each Row and Column of Board
+                 Checks if the squares on the TrapAreas are indeed SquareType.Trap
+
+
+
+              3. Expected Outcome :
+                  ALL Squares on the TrapAreas coordinate are supposed to be of type SquareType.Trap
+        '''
+        model = Model()
+        
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) in trapAreas:
+                    self.assertEqual(model.board[row][col].type, SquareType.Trap)
+
+    def test_initializeBoard3(self):
+        '''
+          test_initializeBoard3 tests the integrity of the initializeBoard function
+
+          1.Functionality Tested : checks if the Den squares in the board is correctly initialized in their position
+
+          2. How It's Tested :
+             Initialize a new model
+             Passes Through Each Row and Column of Board
+             Checks if the squares on the DenAreas are indeed SquareType.Den
+
+
+
+          3. Expected Outcome :
+              ALL Squares on the DenAreas coordinate are supposed to be of type SquareType.Den
+        '''
+        model = Model()
+       
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) in denAreas:
+                    self.assertEqual(model.board[row][col].type, SquareType.Den)
+
+    def test_initializeBoard4(self):
+        '''
+          test_initializeBoard4 tests the integrity of the initializeBoard function
+
+          1.Functionality Tested : checks if the Normal squares in the board is correctly initialized in their position
+
+          2. How It's Tested :
+             Initialize a new model
+             Passes Through Each Row and Column of Board
+             Checks if the Squares are not from Den, Trap or River Area
+             If not, it is determined to be a position for normal square
+             It is checked if it is of type Normal Square
+
+
+
+          3. Expected Outcome :
+              ALL Squares determined to be from normal area coordinate are supposed to be of type SquareType.Normal
+        '''
+        model = Model()
+       
+        for row in range(9):
+            for col in range(0, 7):
+                if (row, col) not in riverAreas and (row, col) not in trapAreas and (row, col) not in denAreas:
+                    self.assertEqual(model.board[row][col].type, SquareType.Normal)
+
     # Test Intent Functions ----------------------------
-    def test_changeTurnsP1(self):
+    def test_changeTurns1(self):
         '''
         Tests if the model can change from player 1 to player 2
 
@@ -32,7 +125,7 @@ class TestModel(unittest.TestCase):
         model.changeTurns()
         self.assertEqual(model.playerTurn, Player.Two)
         self.assertEqual(model.selectedPiece, None)
-    def test_changeTurnsP2(self):
+    def test_changeTurns2(self):
         model = Model()
         model.playerTurn = Player.Two
         model.selectedPiece = Piece(player=Player.Two, location=model.board[0][0], type=PieceType.Lion)
@@ -336,26 +429,9 @@ class TestModel(unittest.TestCase):
         model.selectPiece('2B')
         model.unselect()
         self.assertEqual(model.selectedPiece, None)
-    def test_select_piece(self):
-        '''
-    test_select_piece is tests if the model accurately reflects issues to the user
 
-    Some of the user's potential inputs are not handled here as theyre handled in the display class
-    issues such as a user selecting a piece outside of the map, etc.
-
-    try to select all the pieces of player 1 as player 1
-    which should return "You have selected..."
-
-    then try to select all the pieces of player 2 as player 1
-    these should all return "You can't choose Opponent's Piece!"
-
-    then try to select all the squares with no piece
-    which should return "No Piece Exists in position"
-    '''
+    def test_select_piece1(self):
         wrong_select = "You can't choose Opponent's Piece!"
-        s = "You have selected "
-        n = "No Piece Exists in position"
-
         model = Model()
         # player 1's turn trying to select opponent's piece
         self.assertEqual(model.selectPiece(
@@ -368,15 +444,21 @@ class TestModel(unittest.TestCase):
         self.assertEqual(model.selectPiece('7G'), wrong_select)
         self.assertEqual(model.selectPiece('9G'), wrong_select)
 
-        # try to select own pieces
-        self.assertIn(s, model.selectPiece('3A'))
-        self.assertIn(s, model.selectPiece('1A'))
-        self.assertIn(s, model.selectPiece('2B'))
-        self.assertIn(s, model.selectPiece('3C'))
-        self.assertIn(s, model.selectPiece('3E'))
-        self.assertIn(s, model.selectPiece('2F'))
-        self.assertIn(s, model.selectPiece('1G'))
-        self.assertIn(s, model.selectPiece('3G'))
+        model.changeTurns()
+
+        self.assertEqual(model.selectPiece(
+            '3A'), wrong_select)  # add assertion here
+        self.assertEqual(model.selectPiece('1A'), wrong_select)
+        self.assertEqual(model.selectPiece('2B'), wrong_select)
+        self.assertEqual(model.selectPiece('3C'), wrong_select)
+        self.assertEqual(model.selectPiece('3E'), wrong_select)
+        self.assertEqual(model.selectPiece('2F'), wrong_select)
+        self.assertEqual(model.selectPiece('1G'), wrong_select)
+        self.assertEqual(model.selectPiece('3G'), wrong_select)
+
+    def test_select_piece2(self):
+        model = Model()
+        n = "No Piece Exists in position"
 
         # try to select nothing
         self.assertIn(n, model.selectPiece('1B'))
@@ -427,27 +509,7 @@ class TestModel(unittest.TestCase):
         self.assertIn(n, model.selectPiece('9E'))
         self.assertIn(n, model.selectPiece('9F'))
 
-        # switch turn
-        model.playerTurn = Player.Two
-        self.assertEqual(model.selectPiece(
-            '3A'), wrong_select)  # add assertion here
-        self.assertEqual(model.selectPiece('1A'), wrong_select)
-        self.assertEqual(model.selectPiece('2B'), wrong_select)
-        self.assertEqual(model.selectPiece('3C'), wrong_select)
-        self.assertEqual(model.selectPiece('3E'), wrong_select)
-        self.assertEqual(model.selectPiece('2F'), wrong_select)
-        self.assertEqual(model.selectPiece('1G'), wrong_select)
-        self.assertEqual(model.selectPiece('3G'), wrong_select)
-        # testing own player's pieces
-        self.assertIn(s, model.selectPiece('7A'))
-        self.assertIn(s, model.selectPiece('9A'))
-        self.assertIn(s, model.selectPiece('8B'))
-        self.assertIn(s, model.selectPiece('7C'))
-        self.assertIn(s, model.selectPiece('7E'))
-        self.assertIn(s, model.selectPiece('8F'))
-        self.assertIn(s, model.selectPiece('7G'))
-        self.assertIn(s, model.selectPiece('9G'))
-
+        model.changeTurns()
         self.assertIn(n, model.selectPiece('1B'))
         self.assertIn(n, model.selectPiece('1C'))
         self.assertIn(n, model.selectPiece('1D'))
@@ -495,7 +557,29 @@ class TestModel(unittest.TestCase):
         self.assertIn(n, model.selectPiece('9D'))
         self.assertIn(n, model.selectPiece('9E'))
         self.assertIn(n, model.selectPiece('9F'))
-
+    def test_select_piece3(self):
+        model = Model()
+        s = "You have selected "
+        # try to select own pieces
+        self.assertIn(s, model.selectPiece('3A'))
+        self.assertIn(s, model.selectPiece('1A'))
+        self.assertIn(s, model.selectPiece('2B'))
+        self.assertIn(s, model.selectPiece('3C'))
+        self.assertIn(s, model.selectPiece('3E'))
+        self.assertIn(s, model.selectPiece('2F'))
+        self.assertIn(s, model.selectPiece('1G'))
+        self.assertIn(s, model.selectPiece('3G'))
+        model.changeTurns()
+        # switch turn
+        # testing own player's pieces
+        self.assertIn(s, model.selectPiece('7A'))
+        self.assertIn(s, model.selectPiece('9A'))
+        self.assertIn(s, model.selectPiece('8B'))
+        self.assertIn(s, model.selectPiece('7C'))
+        self.assertIn(s, model.selectPiece('7E'))
+        self.assertIn(s, model.selectPiece('8F'))
+        self.assertIn(s, model.selectPiece('7G'))
+        self.assertIn(s, model.selectPiece('9G'))
     def test_attack_own_den_p2(self):
         '''
     test_attack_own_den_p2 checks if player 2 can attack their own den
@@ -814,6 +898,160 @@ class TestPiece(unittest.TestCase):
 
 class TestSquare(unittest.TestCase):
     #Intent Functions ----------------------------
+
+    # Auxilery Functions TEST ----------------------
+    def test_jumpElligible1(self):
+        '''
+              test_jumpElligible1 tests the integrity of the jumpElligible function
+
+              1.Functionality Tested : checks if the piece is elligible to jump
+
+              2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square
+                 Initialize a new lion piece
+                 check using jumpElligible func() if piece should be able to jump
+
+              3. Expected Outcome :
+                  The Function is expected to return TRUE
+        '''
+        model = Model()
+        sq = Square(SquareType.Normal,1,1,model)
+        acc = sq._jumpElligible(Piece(PieceType.Lion,sq,Player.One))
+        self.assertEqual(acc,True)
+    def test_jumpElligible2(self):
+        '''
+              test_jumpElligible1 tests the integrity of the jumpElligible function
+
+              1.Functionality Tested : checks if the piece is elligible to jump
+
+              2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square
+                 Initialize a new tiger piece
+                 check using jumpElligible func() if piece should be able to jump
+
+              3. Expected Outcome :
+                  The Function is expected to return TRUE
+        '''
+        model = Model()
+        sq = Square(SquareType.Normal,1,1,model)
+        acc = sq._jumpElligible(Piece(PieceType.Tiger,sq,Player.One))
+        self.assertEqual(acc,True)
+    def test_jumpElligible3(self):
+        '''
+              test_jumpElligible1 tests the integrity of the jumpElligible function
+
+              1.Functionality Tested : checks if the piece is elligible to jump
+
+              2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square
+                 Initialize a new rat piece
+                 check using jumpElligible func() if piece should be able to jump
+
+              3. Expected Outcome :
+                  The Function is expected to return FALSE
+        '''
+        model = Model()
+        sq = Square(SquareType.Normal,1,1,model)
+        acc = sq._jumpElligible(Piece(PieceType.Rat,sq,Player.One))
+        self.assertEqual(acc,False)
+
+    #test_withinOneSquare
+
+    #test ownDen
+
+    def test_waterElligible1(self):
+        '''
+              test_waterElligible tests the integrity of the waterElligible function
+
+              1.Functionality Tested : checks if the piece is elligible to enter water
+
+              2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square
+                 Initialize a new rat piece
+                 check using waterElligible func() if piece should be able to enter the water
+
+              3. Expected Outcome :
+                  The Function is expected to return TRUE
+        '''
+        model = Model()
+        sq = Square(SquareType.Normal,1,1,model)
+        acc = sq._waterElligible(Piece(PieceType.Rat,sq,Player.One))
+        self.assertEqual(acc,True)
+
+    def test_waterElligible2(self):
+        '''
+              test_waterElligible tests the integrity of the waterElligible function
+
+              1.Functionality Tested : checks if the piece is elligible to enter water
+
+              2. How It's Tested :
+                 Initialize a new model
+                 Initialize a new square
+                 Initialize a new elephant piece
+                 check using waterElligible func() if piece should be able to enter the water
+
+              3. Expected Outcome :
+                  The Function is expected to return FALSE
+        '''
+        model = Model()
+        sq = Square(SquareType.Normal,1,1,model)
+        acc = sq._waterElligible(Piece(PieceType.Elephant,sq,Player.One))
+        self.assertEqual(acc,False)
+    def test_occupy1(self):
+        pass
+    def test_occupy2(self):
+        pass
+
+    # Intent TESTS --------------
+    def test_tryToOccupy1(self):
+        model = Model()
+        sq1 = Square(SquareType.Normal,0,0,model)
+        p1 = Piece(PieceType.Rat,Square(SquareType.Normal,3,3,model),Player.One)
+        self.assertEqual(sq1.tryToOccupy(p1),"Invalid destination. You are out of your range.")
+
+    def test_tryToOccupy2(self):
+        model = Model()
+        sq1 = Square(SquareType.Normal, 0, 0, model)
+        p1 = Piece(PieceType.Lion, Square(SquareType.Normal, 3, 3, model), Player.One)
+        self.assertEqual(sq1.tryToOccupy(p1), "Invalid Jump attempted!")
+
+
+    def test_tryToOccupy3(self):
+        model = Model()
+        sq1 = Square(SquareType.Den, 0, 0, model)
+        p1 = Piece(PieceType.Lion, Square(SquareType.Normal, 0, 1, model), Player.One)
+        self.assertEqual(sq1.tryToOccupy(p1), "Illegal Move! You tried to move to your own den square")
+
+    def test_tryToOccupy4(self):
+        model = Model()
+        sq1 = Square(SquareType.Water, 0, 0, model)
+        p1 = Piece(PieceType.Lion, Square(SquareType.Normal, 0, 1, model), Player.One)
+        self.assertEqual(sq1.tryToOccupy(p1), "Illegal Move, You can't move into water. Only Rat(1) Can!")
+
+    def test_tryToOccupy5(self):
+        model = Model()
+
+        pass
+
+    def test_tryToOccupy6(self):
+        model = Model()
+
+        pass
+
+    def test_tryToOccupy7(self):
+        model = Model()
+
+        pass
+
+    def test_tryToOccupy8(self):
+        model = Model()
+
+        pass
+
     def test_empty1(self):
         '''
             test_empty1 tests the integrity of the empty function
@@ -869,21 +1107,6 @@ class TestSquare(unittest.TestCase):
 
 
         self.assertEqual(square.empty(), False)
-
-    # Auxilery Functions TEST ----------------------
-    def test_jumpElligible1(self):
-        model = Model()
-        sq = Square(SquareType.Normal,1,1,model)
-        acc = sq._jumpElligble(Piece(PieceType.Lion,sq,Player.One))
-        self.assertIn(acc,True)
-
-    def test_occupy1(self):
-        pass
-    def test_occupy2(self):
-        pass
-
-    # Other TESTS --------------
-
 
 def run_some_tests():
     # Run only the tests in the specified classes
