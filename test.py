@@ -187,11 +187,7 @@ class TestModel(unittest.TestCase):
         model.changeTurns()
         model.changeTurns()
         self.assertEqual(model.playerTurn, Player.Two)
-
-  
-    
-                     
-
+               
 
     # Other Functions ----------------------------
     
@@ -263,7 +259,7 @@ class TestModel(unittest.TestCase):
         self.assertEqual(model.attemptMove('2A'), 'Succesfully moved piece to square (2, \'A\')')
         self.assertEqual(model.playerTurn, Player.Two)
 
-    def test_attemptMove3(self):
+    def test_attempt3(self):
 
         '''
     test_attack_rat_elephant_from_water checks if a rat can
@@ -586,9 +582,9 @@ class TestModel(unittest.TestCase):
         self.assertEqual(model.isIntervened((5, 3), (5, 6)), True)
 
         self.assertEqual(model.isIntervened((0, 1), (0, 4)), False)
-    def test_ownDen(self):
+    def test_ownDen1(self):
         '''
-       FUNCTIONALITY: test_attack_own_den_p1 checks if player 1 can attack their own den
+       FUNCTIONALITY: test_attack_own_den checks if player 1 can attack their own den
        like all functions initialize a new model functions to start
        with a fresh board
 
@@ -652,7 +648,7 @@ class TestModel(unittest.TestCase):
 
         model.selectPiece('9C')
         self.assertEqual(model.attemptMove('9D'), "Illegal Move! You tried to move to your own den square")
-    def test_elligibleJump(self):
+    def test_elligibleJump1(self):
         '''
     FUNCTIONALITY:test_if_lion_can_jump checks if the lion can jump
     across river tiles
@@ -1308,6 +1304,7 @@ class TestSquare(unittest.TestCase):
               3. Expected Outcome :
                   The Function is expected to return True
         '''
+
         model = Model()
         square = model.board[6][0]
         piece = square.occupiedPiece
