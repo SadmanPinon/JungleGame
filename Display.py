@@ -40,13 +40,14 @@ class Display():
 
 
     def takeInput(self) -> str:
+        term = self.game.term
         '''
         Takes User Input
         @Returns formatted string indicating user input
         '''
         print(self.game.dashboardText)
-        player = "Player 1" if self.game.model.playerTurn == Player.One else "Player 2"
-        print(f"{player}'s Turn")
+        player = f"{term.on_pink('Player 1')}" if self.game.model.playerTurn == Player.One else f"{term.on_purple('Player 2')}"
+        print(f"{player}'s Turn")       
         userInput = input("Enter Input: ")
         return userInput.upper()
         
