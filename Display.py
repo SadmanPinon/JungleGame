@@ -49,7 +49,7 @@ class Display():
         player = f"{term.on_pink('Player 1')}" if self.game.model.playerTurn == Player.One else f"{term.on_purple('Player 2')}"
         print(f"{player}'s Turn")       
         userInput = input("Enter Input: ")
-        return userInput.upper()
+        return userInput.upper().strip()
         
             
 
