@@ -79,8 +79,10 @@ class Game():
         input = input.strip()
 
         if input == "U":
+            
             if self.model.selectedPiece == None:
                 self.dashboardText = "No Piece is currently selected"
+                return 
             self.dashboardText = self.model.unselect()
         elif len(input) != 2:            
             self.dashboardText = f"Invalid Input! Your input should be 2 characters, you gave {len(input)}"
