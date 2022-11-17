@@ -171,6 +171,8 @@ class Game():
         print("1)Select Piece: Only applicable when no Piece is currently selected by the player or the coordinate given by the command does indeed have a valid piece that can be selected ( e.g doesn’t belong to the other team).\nSelected piece will be highlighted and confirmation prompts will be given in dashboard text.\n")
         print("2)Move Piece: Only applicable when a particular piece is already selected. If the coordinates specified obey the rules of the game, a move and/or capture may be performed.\n Status can be checked by checking the dashboard.\n")
         print("U : Unselects a selected piece ( if any). Unselected piece will lose its highlight")
+        print("Exit : Terminates the game. No winner will be declared.")
+        print("Help : Open User manual inside the game for users to refer to contents")
 
         #   '''
 
