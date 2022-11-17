@@ -283,6 +283,14 @@ class Square():
 
                 return False
         return False
+    
+    def _validTrap(self,piece: Piece) -> Boolean: 
+        if self.type == SquareType.Trap: #If the square is a trap square 
+            if piece.team == Player.One: 
+                return self.row <3
+            elif piece.team == Player.Two: 
+                return self.row >6
+        return False 
 
     def _attemptAttack(self, piece: Piece) -> str:
         '''
@@ -296,7 +304,7 @@ class Square():
         '''
 
         # 3
-        if (self.type == SquareType.Trap):
+        if (self._validTrap(piece=piece)):
             return self._attack(piece=piece)
         # 1
         elif (piece.type == PieceType.Rat and self._crossBorderAttack(piece=piece)):
