@@ -78,12 +78,15 @@ class Game():
         '''
         input = input.strip()
 
-        if input == "U":
-            
+        if input == "U":            
             if self.model.selectedPiece == None:
                 self.dashboardText = "No Piece is currently selected"
                 return 
             self.dashboardText = self.model.unselect()
+        elif input == "HELP":
+            self.__printHelp()
+            return  
+        
         elif len(input) != 2:            
             self.dashboardText = f"Invalid Input! Your input should be 2 characters, you gave {len(input)}"
         elif not (input[0]  in "123456789" and input[1]  in "ABCDEFG"):                
@@ -123,16 +126,36 @@ class Game():
         while not self.__isFinished():            
             self.display.drawBoard()
             input = self.display.takeInput()
+
+            if input == "EXIT":                
+                print(f"{self.term.white_on_red('Game is terminated! Thanks for playing!')}")
+                break 
+            
             self.__processInput(input)
+        
+        if self.model.winner is None: 
+            # For cases when game is forced to terminate early without any winner being set 
+            
+            return 
         
         winner = "Player 1" if self.model.winner == Player.One else "Player 2"
         print(f"Game Finished! {winner} Wins!")
            
-    
+    def __printHelp(self) -> None: 
+        '''Prints the help command for user's reference'''
+        print("Help Provided!")
+
 
         
 
-          
+        #   '''
+
+        #     Introduction 
+
+
+
+
+        #   '''
         
 
 
