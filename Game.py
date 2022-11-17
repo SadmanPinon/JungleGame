@@ -8,7 +8,7 @@ class Game():
     '''View Controller of the Game. The Game Class concerns with transfer of information between the Model and Display class'''
     term = Terminal()  # Used for formatting terminal text
     # Dashboard Text display useful info regarding stages of the game (e.g piece occupied/player attacked)
-    dashboardText = "Welcome to JungleBoard"
+    dashboardText = "Welcome to JungleBoard, just type 'help' if you need any."
     model = Model()  # Model class responsible for game logic
 
     def __init__(self):
