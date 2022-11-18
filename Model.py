@@ -285,11 +285,20 @@ class Square():
         return False
     
     def _validTrap(self,piece: Piece) -> Boolean: 
+        '''
+        Valid Trap ensures that 
+
+        1) The Piece itself is a trap square
+        2) The occupied piece belongs to an enemy team. 
+
+        @Returns Boolean indicating if this is a valid situation where an attack can be performed
+        on a trapped piece. 
+        '''
         if self.type == SquareType.Trap: #If the square is a trap square 
             if piece.team == Player.One: 
-                return self.row <3
+                return self.row <3 # If trap belongs to Player 1 
             elif piece.team == Player.Two: 
-                return self.row >6
+                return self.row >6 # If trap belongs to player 2 
         return False 
 
     def _attemptAttack(self, piece: Piece) -> str:

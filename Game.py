@@ -142,7 +142,7 @@ class Game():
 
     def __printHelp(self) -> None:
         '''Prints the help command for user's reference'''
-        print("--THE GAME RULES--\n\nThe Board is of  9 x 7 configuration with each rows marked with numbers 1-7 and each column marked with characters A-G.")
+        print("--HELP MANUAL--\n\nThe Board is of  9 x 7 configuration with each rows marked with numbers 1-7 and each column marked with characters A-G.")
         print("Users select a piece by inputting the appropriate row,column pair.\nFor example, The Rat Piece of Player 1 is in the Coordinate 3A.\nSimilarly, The Rat Piece of Player 2 is in the Coordinate 7G.\n")
         print("Each Piece in game is represented as a Number, Subscript pair.\nThe number represents the Character ( and the rank) of the piece.\n\nBelow table lists the appropriate Character for each power: ")
         print("-----------------------")
@@ -174,8 +174,4 @@ class Game():
         print("Exit : Terminates the game. No winner will be declared.")
         print("Help : Open User manual inside the game for users to refer to contents")
 
-        #   '''
-
-        #     Introduction
-
-        #   '''
+      
